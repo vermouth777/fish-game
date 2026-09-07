@@ -1,0 +1,21 @@
+# 依赖
+node_modules/
+package.json
+package-lock.json
+
+# 调试/临时
+*.log
+*.tmp
+*.bak
+*.swp
+.DS_Store
+Thumbs.db
+
+# 编辑器
+.vscode/
+.idea/
+
+# 环境变量 / 凭据
+.env
+.env.local
+*.pem
