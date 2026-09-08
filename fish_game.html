@@ -305,6 +305,7 @@
     <div class="panel controls">
       <button class="btn primary" id="castBtn">🎣 抛竿 / 收杆</button>
       <button class="btn" id="autoBtn">🛰 切换：手动 / 自动</button>
+      <button class="btn ghost" id="soundBtn">🔊 声音：开</button>
       <button class="btn ghost" id="resetBtn">↺ 重置</button>
     </div>
 
@@ -328,6 +329,7 @@
       <div class="overlay-inner">
         <h1>🐟 摸鱼钓鱼</h1>
         <div class="lead">月夜星空 · 60 秒限时摸鱼</div>
+        <div class="lead" style="font-size:13px;color:#ffd980;margin-bottom:14px">🏆 历史最高 <b id="bestStart">0</b> 分</div>
         <div class="rules">
           <div><b>🎣 抛竿</b> · <kbd>空格</kbd> / <kbd>钓</kbd> 按钮</div>
           <div><b>↕↔</b> <kbd>WASD</kbd> / <kbd>方向键</kbd> 移动鱼钩</div>
@@ -342,8 +344,10 @@
       <div class="overlay-inner">
         <h2>⏰ 时间到！</h2>
         <div class="big"><b id="finalScore">0</b> 分</div>
+        <div class="sub" id="newRecord" style="display:none;color:#ffd980;font-size:17px;margin-top:8px">🎉 新纪录！</div>
         <div class="sub">最高连击 🔥<b id="maxCombo">0</b> · 倍率峰值 ×<b id="maxMult">1</b></div>
-        <div class="sub">总抛竿 <b id="finalCasts">0</b> 次</div>
+        <div class="sub">总抛竿 <b id="finalCasts">0</b> 次 · 累计渔获 <b id="totalFish">0</b> 条</div>
+        <div class="sub">🏆 历史最高 <b id="bestScore">0</b> 分</div>
         <div style="margin-top:24px"><button class="btn primary" id="restartBtn">再来一局</button></div>
       </div>
     </div>
@@ -636,6 +640,109 @@
   const $restartBtn = document.getElementById('restartBtn');
   const $startCover = document.getElementById('startCover');
   const $startBtn   = document.getElementById('startBtn');
+  const $soundBtn   = document.getElementById('soundBtn');
+  const $bestScore  = document.getElementById('bestScore');
+  const $totalFish  = document.getElementById('totalFish');
+  const $bestStart  = document.getElementById('bestStart');
+  const $newRecord  = document.getElementById('newRecord');
+
+  // ===== 音效系统（Web Audio API，无需外部音频文件） =====
+  let audioCtx = null;
+  let soundOn = true;
+  function ensureAudio() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      audioCtx = new AC();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+  // 单个音符：freq 起始频率，to 结束频率(滑音)，dur 时长(秒)，type 波形，gain 音量，delay 延迟
+  function tone(freq, dur = 0.1, type = 'sine', gain = 0.15, delay = 0, to = null) {
+    if (!soundOn) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + delay;
+    const osc = ctx.createOscillator();
+    const g = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, t0);
+    if (to) osc.frequency.exponentialRampToValueAtTime(to, t0 + dur);
+    g.gain.setValueAtTime(0.0001, t0);
+    g.gain.exponentialRampToValueAtTime(gain, t0 + 0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(g).connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.05);
+  }
+  // 噪声：用于水花、入水等
+  function noise(dur = 0.2, gain = 0.2, delay = 0, filterFreq = 1200) {
+    if (!soundOn) return;
+    const ctx = ensureAudio();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + delay;
+    const bufferSize = Math.floor(ctx.sampleRate * dur);
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = filterFreq;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(gain, t0);
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    src.connect(filter).connect(g).connect(ctx.destination);
+    src.start(t0);
+  }
+  const SFX = {
+    cast()      { noise(0.15, 0.12, 0, 2000); tone(300, 0.18, 'sine', 0.1, 0, 120); },
+    splash()    { noise(0.25, 0.18, 0, 900); },
+    bite()      { tone(660, 0.07, 'square', 0.08); tone(880, 0.08, 'square', 0.08, 0.08); },
+    reel()      { tone(200, 0.25, 'sawtooth', 0.06, 0, 500); },
+    empty()     { tone(160, 0.2, 'sine', 0.1, 0, 90); },
+    catch(fish) {
+      const base = 500 + (fish.score / 100) * 400; // 小鱼520 ~ 金鱼900
+      tone(base, 0.09, 'triangle', 0.16);
+      tone(base * 1.5, 0.12, 'triangle', 0.14, 0.07);
+      if (fish.glow) { // 金鱼额外琶音
+        tone(base, 0.1, 'sine', 0.15, 0);
+        tone(base * 1.25, 0.1, 'sine', 0.15, 0.08);
+        tone(base * 1.5, 0.12, 'sine', 0.15, 0.16);
+        tone(base * 2, 0.18, 'sine', 0.16, 0.24);
+      }
+    },
+    combo(n) {
+      const f = 440 + Math.min(n, 10) * 60;
+      tone(f, 0.08, 'square', 0.08);
+      tone(f * 1.5, 0.1, 'square', 0.08, 0.05);
+    },
+    tick()      { tone(1000, 0.05, 'square', 0.06); },
+    start()     { tone(392, 0.12, 'sine', 0.12); tone(523, 0.12, 'sine', 0.12, 0.1); tone(659, 0.2, 'sine', 0.14, 0.2); },
+    over()      { tone(392, 0.2, 'sine', 0.12); tone(330, 0.2, 'sine', 0.12, 0.18); tone(262, 0.35, 'sine', 0.14, 0.36); },
+  };
+
+  // ===== 存档：最高分 / 累计渔获 =====
+  const SAVE_KEY = 'fish_game_save_v1';
+  function loadSave() {
+    try {
+      const raw = localStorage.getItem(SAVE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return { best: 0, totalFish: 0, games: 0 };
+  }
+  function persistSave(s) {
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch (e) {}
+  }
+  let saveData = loadSave();
+
+  function refreshBestUI() {
+    $bestScore.textContent = saveData.best;
+    $totalFish.textContent = saveData.totalFish;
+    $bestStart.textContent = saveData.best;
+  }
 
   let score = 0, casts = 0, autoMode = false, autoTimer = 0, gameTime = 0;
   let timeLeft = 60, combo = 0, comboTimerMs = 0, multiplier = 1, maxCombo = 0, gameOver = false;
@@ -687,6 +794,7 @@
     const earned = baseScore * multiplier;
     score += earned;
     $score.textContent = score;
+    if (combo >= 2) SFX.combo(combo);
     const tag = multiplier > 1 ? ` ×${multiplier} 🔥` : '';
     showToast(`+${earned} 分${tag}`, fishName);
     return earned;
@@ -698,7 +806,15 @@
     $maxCombo.textContent   = maxCombo;
     $maxMult.textContent    = calcMult(maxCombo);
     $finalCasts.textContent = casts;
+    // 存档：局数 +1、累计渔获、刷新最高分
+    saveData.games += 1;
+    const isNewRecord = score > saveData.best;
+    if (isNewRecord) saveData.best = score;
+    persistSave(saveData);
+    refreshBestUI();
+    $newRecord.style.display = isNewRecord ? 'block' : 'none';
     $gameOver.classList.add('show');
+    SFX.over();
     setStatus('⏰ 时间到 — 点击「再来一局」继续摸鱼');
   }
 
@@ -714,6 +830,7 @@
     casts++;
     $casts.textContent = casts;
     hook.state = 'dropping';
+    SFX.cast();
     setStatus('鱼钩下沉中... 耐心等待 ⏳');
     addRipple(hook.x, surfaceY(), true);
   }
@@ -721,9 +838,14 @@
   function reel() {
     if (hook.state === 'dropping' || hook.state === 'sunk' || hook.state === 'biting') {
       hook.state = 'reeling';
+      SFX.reel();
       if (hook.caughtFish) {
         const t = hook.caughtFish.type;
         const earned = awardScore(t.score, t.name);
+        SFX.catch(t);
+        saveData.totalFish += 1;
+        persistSave(saveData);
+        refreshBestUI();
         pushLog({name: t.name, score: earned, mult: multiplier});
         showToast(`+${earned} 分${multiplier > 1 ? ' ×' + multiplier + ' 🔥' : ''}`, `${t.name} · ${t.blurb}`);
         // 把鱼从场景里删掉
@@ -733,6 +855,7 @@
         setTimeout(() => spawnFish(), 600);
         hook.caughtFish = null;
       } else {
+        SFX.empty();
         showToast('空钩 ☁️', '再试试运气');
       }
       setStatus('收杆中...');
@@ -770,10 +893,17 @@
     gameStarted = true;
     $startCover.classList.remove('show');
     resetGame();
+    SFX.start();
     showToast('60 秒摸鱼开始！冲！');
   });
   $resetBtn.addEventListener('click', () => {
     resetGame();
+  });
+
+  $soundBtn.addEventListener('click', () => {
+    soundOn = !soundOn;
+    $soundBtn.textContent = soundOn ? '🔊 声音：开' : '🔇 声音：关';
+    if (soundOn) SFX.start(); // 恢复声音时给个即时反馈
   });
 
   $restartBtn.addEventListener('click', () => {
@@ -790,6 +920,7 @@
     setCombo(0); comboTimerMs = 0; maxCombo = 0;
     $comboBar.style.width = '0%';
     $gameOver.classList.remove('show');
+    refreshBestUI();
     $logList.innerHTML = '<div style="color:#889;font-size:12px">还没有收获……</div>';
     fishes.length = 0; for (let i=0;i<7;i++) spawnFish();
     hook.state = 'idle';
@@ -819,6 +950,10 @@
   function catchByTap(f, idx) {
     const t = f.type;
     const earned = awardScore(t.score, t.name);
+    SFX.catch(t);
+    saveData.totalFish += 1;
+    persistSave(saveData);
+    refreshBestUI();
     pushLog({name: t.name, score: earned, mult: multiplier});
     addRipple(f.x, f.y, true);
     addRipple(f.x, f.y + 6, false);
@@ -1263,6 +1398,7 @@
         hook.y = surfaceY() + 30;
         hook.state = 'sunk';
         hook.sunkAt = gameTime;
+        SFX.splash();
         setStatus('🐟 鱼钩已沉底 · 等待鱼上钩');
         addRipple(hook.x, surfaceY() + 2, true);
       }
@@ -1280,6 +1416,7 @@
           hook.caughtFish = nearest;
           hook.state = 'biting';
           hook.biteAt = gameTime;
+          SFX.bite();
           addRipple(hook.x, surfaceY(), true);
           setStatus('💥 鱼咬钩了！快按 [收杆]！');
         } else if (gameTime - hook.sunkAt > 6500) {
@@ -1391,7 +1528,10 @@
       timeLeft -= dt / 1000;
       if (timeLeft <= 0) { timeLeft = 0; endGame(); }
       const tl = Math.ceil(timeLeft);
-      if ($timeLeft.textContent !== String(tl)) $timeLeft.textContent = tl;
+      if ($timeLeft.textContent !== String(tl)) {
+        $timeLeft.textContent = tl;
+        if (tl <= 5 && tl > 0) SFX.tick(); // 最后 5 秒倒计时滴答
+      }
       $timeLeft.classList.toggle('timer-crit', timeLeft <= 5);
       $timeLeft.classList.toggle('timer-warn', timeLeft > 5 && timeLeft <= 15);
 
@@ -1422,6 +1562,7 @@
 
     requestAnimationFrame(frame);
   }
+  refreshBestUI();
   requestAnimationFrame(frame);
 })();
 </script>
