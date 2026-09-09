@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html lang="zh-CN" data-page-node-id="KLSdPYdkiPDRITROUq6q26">
+<head data-page-node-id="fbzo1PzzR4rA8al1T9BGvQ">
+<meta charset="UTF-8" data-page-node-id="Jxrlt2RtDnLFmLRVssgtVv">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" data-page-node-id="XfDztQbMIMN1IJgIK0kXAc">
 <title>月湖夜钓 · Moonlake Fishing</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -301,165 +301,372 @@
     h1.logo{font-size:26px;}
     .story{line-height:1.7;}
   }
+  /* ===================== 质感层（去塑料感） ===================== */
+  #grain{
+    position:absolute;inset:0;z-index:4;pointer-events:none;opacity:.42;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  #tint{
+    position:absolute;inset:0;z-index:5;pointer-events:none;mix-blend-mode:soft-light;
+    background:linear-gradient(180deg,rgba(72,120,205,.44) 0%,rgba(20,42,92,.10) 40%,rgba(18,28,66,.20) 74%,rgba(96,58,30,.24) 100%);
+  }
+  #softvig{
+    position:absolute;inset:0;z-index:6;pointer-events:none;
+    background:radial-gradient(ellipse 80% 70% at 50% 45%,rgba(0,0,0,0) 38%,rgba(2,4,14,.52) 100%);
+  }
+
+  /* ===================== 新手教学 ===================== */
+  #tut{position:absolute;inset:0;z-index:38;pointer-events:none;opacity:0;transition:opacity .35s;}
+  #tut.on{opacity:1;}
+  #tutHole{
+    position:absolute;border-radius:16px;
+    border:2px solid rgba(255,217,128,.92);
+    box-shadow:0 0 0 9999px rgba(2,5,16,.66), 0 0 34px rgba(255,205,100,.42), inset 0 0 26px rgba(255,205,100,.16);
+    transition:left .38s cubic-bezier(.22,.85,.3,1), top .38s cubic-bezier(.22,.85,.3,1),
+               width .38s cubic-bezier(.22,.85,.3,1), height .38s cubic-bezier(.22,.85,.3,1);
+  }
+  #tutTip{
+    position:absolute;width:min(330px,76vw);padding:15px 18px 13px;border-radius:16px;
+    background:linear-gradient(160deg,rgba(48,40,102,.97),rgba(14,11,38,.98));
+    border:1px solid rgba(255,217,128,.42);
+    box-shadow:0 22px 54px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.09);
+    transition:left .38s cubic-bezier(.22,.85,.3,1), top .38s cubic-bezier(.22,.85,.3,1);
+  }
+  #tutTip h5{font-size:14.5px;color:#ffd980;letter-spacing:1.5px;margin-bottom:7px;font-weight:700;}
+  #tutTip p{font-size:12.5px;line-height:1.9;color:#c9d5f2;}
+  #tutTip p b{color:#ffd980;}
+  #tutTip .foot{margin-top:10px;font-size:11px;color:#8ea0c8;display:flex;justify-content:space-between;align-items:center;gap:8px;}
+  #tutTip .step{color:#ffd980;}
+  #tutSkip{
+    position:absolute;right:14px;top:14px;padding:7px 15px;border-radius:999px;pointer-events:auto;cursor:pointer;
+    background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.2);color:#c8d6f5;font-size:12px;font-family:inherit;
+  }
+  #tutSkip:hover{background:rgba(255,255,255,.18);}
+  #tutNext{
+    position:absolute;padding:9px 24px;border-radius:10px;pointer-events:auto;cursor:pointer;border:none;
+    background:linear-gradient(135deg,#ffc46b,#ff8a4a);color:#33190a;font-weight:700;font-size:13px;letter-spacing:2px;
+    font-family:inherit;box-shadow:0 8px 22px rgba(255,140,70,.35);
+    transition:left .38s cubic-bezier(.22,.85,.3,1), top .38s cubic-bezier(.22,.85,.3,1);
+  }
+  #tutNext:hover{transform:translateY(-1px);}
+  #tutPulser{
+    position:absolute;width:34px;height:34px;border-radius:50%;pointer-events:none;
+    border:2px solid rgba(255,217,128,.55);animation:tutpulse 1.5s infinite;
+  }
+  @keyframes tutpulse{
+    0%{transform:scale(.7);opacity:.9;}
+    70%{transform:scale(1.7);opacity:0;}
+    100%{transform:scale(1.7);opacity:0;}
+  }
+
+  /* ===================== 工作台 / 厨房 HUD ===================== */
+  .minihud{
+    position:absolute;left:50%;transform:translateX(-50%);display:none;text-align:center;
+    pointer-events:none;z-index:12;
+  }
+  .minihud.on{display:block;}
+  #scaleHud{top:13px;width:min(500px,92vw);padding:11px 16px;}
+  #cookHud{top:13px;width:min(460px,92vw);padding:11px 16px;}
+  .bar{height:9px;border-radius:6px;background:rgba(255,255,255,.11);overflow:hidden;margin-top:5px;
+    border:1px solid rgba(255,255,255,.09);}
+  .bar > i{display:block;height:100%;width:0%;border-radius:6px;transition:width .09s linear;}
+  .barlab{display:flex;justify-content:space-between;font-size:10.5px;color:#9fb0d4;letter-spacing:1px;}
+  .barlab b{color:#ffd980;}
+  .hudtitle{font-size:13px;color:#ffd980;letter-spacing:2px;font-weight:700;margin-bottom:7px;}
+  .hudsub{font-size:11px;color:#93a4cc;margin-top:7px;letter-spacing:.5px;}
+
+  /* ===================== 渔村 ===================== */
+  .tabs{display:flex;gap:6px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;}
+  .tab{padding:8px 16px;border-radius:10px;cursor:pointer;font-size:12.5px;letter-spacing:1.5px;
+    background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.11);color:#a9b8dc;transition:.15s;font-family:inherit;}
+  .tab:hover{background:rgba(255,255,255,.13);}
+  .tab.on{background:linear-gradient(135deg,rgba(255,196,107,.92),rgba(255,138,74,.86));color:#33190a;font-weight:700;border-color:transparent;}
+  .inv{display:grid;grid-template-columns:repeat(auto-fill,minmax(146px,1fr));gap:8px;
+    max-height:40vh;overflow-y:auto;padding:2px;text-align:left;}
+  .inv::-webkit-scrollbar{width:5px;}
+  .inv::-webkit-scrollbar-thumb{background:rgba(255,217,128,.3);border-radius:3px;}
+  .item{padding:9px 11px;border-radius:12px;cursor:pointer;transition:.14s;
+    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);}
+  .item:hover{background:rgba(255,255,255,.11);transform:translateY(-1px);}
+  .item.sel{border-color:rgba(255,217,128,.6);background:rgba(255,217,128,.12);}
+  .item .n{font-size:12.5px;color:#e2eaff;display:flex;justify-content:space-between;gap:4px;align-items:center;}
+  .item .m{font-size:10.5px;color:#8ea0c8;margin-top:4px;display:flex;justify-content:space-between;gap:4px;}
+  .qS{color:#ffe8a8;} .qA{color:#9df5c4;} .qB{color:#bcd2f5;} .qC{color:#ffb0b0;} .qRaw{color:#8ea0c8;}
+  .coinbar{display:flex;justify-content:center;gap:20px;margin-bottom:13px;font-size:11.5px;color:#93a4cc;letter-spacing:1px;}
+  .coinbar b{display:block;font-size:19px;color:#ffd980;margin-top:2px;font-weight:700;}
+  .coinbar .mk b{font-size:14px;color:#9df5c4;}
+  .empty2{padding:30px 10px;color:#7b88a8;font-size:12.5px;text-align:center;}
+  .recipe{padding:10px 13px;border-radius:12px;text-align:left;margin-bottom:8px;cursor:pointer;transition:.14s;
+    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);}
+  .recipe:hover{background:rgba(255,255,255,.11);transform:translateY(-1px);}
+  .recipe.lock{opacity:.4;cursor:not-allowed;}
+  .recipe .rn{font-size:13px;color:#ffd980;font-weight:600;display:flex;justify-content:space-between;}
+  .recipe .rd{font-size:11px;color:#a9b8dc;margin-top:4px;line-height:1.75;}
+  .upg{padding:11px 13px;border-radius:12px;text-align:left;margin-bottom:8px;cursor:pointer;transition:.14s;
+    background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.09);
+    display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .upg:hover{background:rgba(255,255,255,.11);transform:translateY(-1px);}
+  .upg.max{opacity:.5;cursor:default;transform:none;}
+  .upg .un{font-size:13px;color:#e2eaff;}
+  .upg .ud{font-size:10.5px;color:#8ea0c8;margin-top:3px;}
+  .price{font-size:12.5px;color:#ffd980;white-space:nowrap;}
+  .lvdots{display:flex;gap:3px;margin-top:5px;}
+  .lvdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.16);}
+  .lvdot.on{background:#ffd980;box-shadow:0 0 7px rgba(255,217,128,.7);}
+
+  /* UI 去塑料：降饱和 + 加内阴影层次 */
+  .btn{background:linear-gradient(135deg,#e5b774,#d4784a)!important;
+    box-shadow:0 6px 20px rgba(180,110,55,.3), inset 0 1px 0 rgba(255,255,255,.24)!important;}
+  .btn.ghost{background:rgba(255,255,255,.07)!important;box-shadow:none!important;}
+  .card{background:linear-gradient(160deg,rgba(18,25,56,.76),rgba(8,11,28,.72))!important;
+    border-color:rgba(150,180,240,.11)!important;}
+  .box{background:linear-gradient(160deg,rgba(38,32,86,.9),rgba(11,8,30,.96))!important;
+    border-color:rgba(255,217,128,.22)!important;}
+  h1.logo{text-shadow:0 2px 30px rgba(255,190,80,.45), 0 1px 0 rgba(255,255,255,.14)!important;}
+  .grade{filter:drop-shadow(0 2px 24px rgba(255,180,60,.42))!important;}
+
+  @media (max-width:760px){
+    #tutTip{width:min(280px,72vw);padding:12px 14px;}
+    .inv{max-height:34vh;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));}
+  }
 </style>
 </head>
-<body>
-<div id="stage">
-  <canvas id="game"></canvas>
+<body data-page-node-id="HawWs2DbpmQq8KDbu0T9ET">
+<div id="stage" data-page-node-id="o4mUQrBXZPDvM35gQr308h">
+  <canvas id="game" data-page-node-id="NH6V7Yhzo1lT13S6ejfTxe"></canvas>
 
-  <div id="ui">
-    <div id="topbar">
-      <div class="card" id="lvCard">
-        <div id="lvName">第一章 · 初见月色</div>
-        <div id="lvSub">浅滩的银鳞</div>
-        <div id="goalBar"><div id="goalFill"></div></div>
-        <div id="goalTxt">目标 <b id="goalNow">0</b> / <b id="goalNeed">500</b></div>
+  <div id="ui" data-page-node-id="mWyyfEXePmKBEuzb3KieEA">
+    <div id="topbar" data-page-node-id="kxF1PcdSwAcyk9q1Q53Yq7">
+      <div class="card" id="lvCard" data-page-node-id="K7ovPq8CU8fDUrl7qAAg9V">
+        <div id="lvName" data-page-node-id="bW3ZvflcRUYJEwKCauBoyr">第一章 · 初见月色</div>
+        <div id="lvSub" data-page-node-id="lARkZcVmTv5la8nVPnD7pO">浅滩的银鳞</div>
+        <div id="goalBar" data-page-node-id="v0jar8Rdsk32DLZctDHp1E"><div id="goalFill" data-page-node-id="EqhqfbAd4SOozPauj10CnX"></div></div>
+        <div id="goalTxt" data-page-node-id="IE2H89qqByfdhD42So8BXd">目标 <b id="goalNow" data-page-node-id="PVODdNFzfr99rGPlJwqDSN">0</b> / <b id="goalNeed" data-page-node-id="GCnJcUTo9QlQ5gYDzSSS2Z">500</b></div>
       </div>
 
-      <div class="card" id="timeCard">
-        <div class="lbl">剩余时间</div>
-        <div id="timeVal">70</div>
+      <div class="card" id="timeCard" data-page-node-id="bM3EzIrqRTc88nTG16N0th">
+        <div class="lbl" data-page-node-id="VJRiUwraGDMwfvki6sAcoJ">剩余时间</div>
+        <div id="timeVal" data-page-node-id="E0Cb5YagoTSHeTmYcMeXq5">70</div>
       </div>
 
-      <div id="rightCol">
-        <div id="ctrlRow">
-          <button class="icobtn" id="sndBtn" title="音效开关">🔊</button>
-          <button class="icobtn" id="pauseBtn" title="暂停 (P)">⏸</button>
-          <button class="icobtn" id="restartBtn" title="重开本关 (R)">↺</button>
+      <div id="rightCol" data-page-node-id="kPQETchpQHCepb79HriaVk">
+        <div id="ctrlRow" data-page-node-id="FCSAkESDdN2Dystn1Cg7jA">
+          <button class="icobtn" id="sndBtn" title="音效开关" data-page-node-id="oIDECj2C9CYRELaE6CfH5x">🔊</button>
+          <button class="icobtn" id="pauseBtn" title="暂停 (P)" data-page-node-id="TTbB3wyRb87xRhDDpBBKSL">⏸</button>
+          <button class="icobtn" id="restartBtn" title="重开本关 (R)" data-page-node-id="d3ero3tcEfQxsGB1febEgC">↺</button>
         </div>
-        <div class="card" id="scoreCard">
-          <div class="lbl">SCORE</div>
-          <div id="scoreVal">0</div>
-          <div id="comboRow">连击 <b id="comboVal">0</b><span id="multTag">×1</span></div>
-          <div id="comboBar"><div id="comboFill"></div></div>
-          <div id="buffRow"></div>
+        <div class="card" id="scoreCard" data-page-node-id="dm8QK9fBV6scKkxzvVgx3v">
+          <div class="lbl" data-page-node-id="XpP15oukLeUestew8pPkBd">SCORE</div>
+          <div id="scoreVal" data-page-node-id="CZmzXw2zHED8skcqI9skzf">0</div>
+          <div id="comboRow" data-page-node-id="BMDsPyEfJsH9pTHxcljqsB">连击 <b id="comboVal" data-page-node-id="Eid5ESyYkHU3ljuqhSbgfs">0</b><span id="multTag" data-page-node-id="zvwL2fzP4LbtxzxXRGkGAN">×1</span></div>
+          <div id="comboBar" data-page-node-id="THT92n76lgmq5Fh7MMYHRa"><div id="comboFill" data-page-node-id="lvS0EleUF2sMWZGL6lQPiC"></div></div>
+          <div id="buffRow" data-page-node-id="5w1Yg4bVqCCRxzjgifmW31"></div>
         </div>
       </div>
     </div>
 
-    <div id="pad">
-      <button class="pbtn" data-d="up">▲</button>
-      <button class="pbtn" data-d="left">◀</button>
-      <button class="pbtn act" data-d="act">钓</button>
-      <button class="pbtn" data-d="right">▶</button>
-      <button class="pbtn" data-d="down">▼</button>
+    <div id="pad" data-page-node-id="skhUmpv6j1BrwC234kvQg1">
+      <button class="pbtn" data-d="up" data-page-node-id="K96w3RLrDpsfEcOHEvsSW2">▲</button>
+      <button class="pbtn" data-d="left" data-page-node-id="JYTJnKXSRzDCfDEdd3JHzi">◀</button>
+      <button class="pbtn act" data-d="act" data-page-node-id="ZwmYxDEy7RrOoMoaCh2iKB">钓</button>
+      <button class="pbtn" data-d="right" data-page-node-id="iTJUvm6cOOaooIA1GAY0TE">▶</button>
+      <button class="pbtn" data-d="down" data-page-node-id="xviYtYzVLLiAjDJgbObFMl">▼</button>
     </div>
 
-    <div class="card" id="logCard">
-      <h4>今 夜 渔 获</h4>
-      <div id="logList"><div class="empty">还没有收获……</div></div>
+    <div class="card" id="logCard" data-page-node-id="lzVCKlV0AogALGPTe7Y0Yg">
+      <h4 data-page-node-id="Rrn9W1LrkJztLjLpuZxCFg">今 夜 渔 获</h4>
+      <div id="logList" data-page-node-id="wVHGlfZ1lsuGmlkrqXdzzQ"><div class="empty" data-page-node-id="G0833YVHMrx7C7V30xt3va">还没有收获……</div></div>
     </div>
 
-    <div id="hint">← → 瞄准 · ↑ ↓ 深度 · 空格 抛竿/收杆 · 点鱼 徒手抓</div>
+    <div id="hint" data-page-node-id="68r75jOeSUwTT78Dtzecn8">← → 瞄准 · ↑ ↓ 深度 · 空格 抛竿/收杆 · 点鱼 徒手抓</div>
 
-    <button id="earlyBtn">🏁 提前收竿 <b>+0</b></button>
+    <button id="earlyBtn" data-page-node-id="9EA3rAmdoSpVOEA80mbhfa">🏁 提前收竿 <b data-page-node-id="DuZuIS9hgh6cGjzn7W99bc">+0</b></button>
 
-    <div id="toast"><div class="big"></div><div class="sm"></div></div>
-    <div id="banner"></div>
+    <div id="toast" data-page-node-id="2LSiEEI4gGzX9gIi8U2rV8"><div class="big" data-page-node-id="OjPBldRdC7bDUHgEARJ9Ct"></div><div class="sm" data-page-node-id="O4xLrMelJJxCRPmgdHCFIT"></div></div>
+    <div id="banner" data-page-node-id="DSVzSz76LsoAyN9GpTVscH"></div>
+
+    <div id="scaleHud" class="minihud card">
+      <div class="hudtitle" id="shTitle">处 理 台</div>
+      <div class="barlab"><span>残留鳞片</span><b id="shScaleV">100%</b></div>
+      <div class="bar"><i id="shScale" style="background:linear-gradient(90deg,#9fd0ff,#dfeaff)"></i></div>
+      <div class="barlab" style="margin-top:6px"><span>刀伤</span><b id="shDmgV">0%</b></div>
+      <div class="bar"><i id="shDmg" style="background:linear-gradient(90deg,#ff9a6a,#ff5f5f)"></i></div>
+      <div class="hudsub" id="shSub">按住鼠标，顺着鱼身从尾向头刮</div>
+    </div>
+
+    <div id="cookHud" class="minihud card">
+      <div class="hudtitle" id="ckTitle">灶 台</div>
+      <div class="barlab"><span>火候</span><b id="ckHeatV">0%</b></div>
+      <div class="bar"><i id="ckHeat" style="background:linear-gradient(90deg,#ffd980,#ff8a4a)"></i></div>
+      <div class="barlab" style="margin-top:6px"><span>焦糊</span><b id="ckBurnV">0%</b></div>
+      <div class="bar"><i id="ckBurn" style="background:linear-gradient(90deg,#7a6a5a,#2a2018)"></i></div>
+      <div class="hudsub" id="ckSub">指针进入金色区域时按 空格 颠勺</div>
+    </div>
+  </div>
+
+  <div id="grain"></div>
+  <div id="tint"></div>
+  <div id="softvig"></div>
+
+  <div id="tut">
+    <div id="tutHole"></div>
+    <div id="tutPulser"></div>
+    <div id="tutTip">
+      <h5 id="tutTitle">教学</h5>
+      <p id="tutBody"></p>
+      <div class="foot"><span class="step" id="tutStep">1 / 6</span><span id="tutHint"></span></div>
+    </div>
+    <button id="tutNext">知道了</button>
+    <button id="tutSkip">跳过教学</button>
   </div>
 
   <!-- 封面 -->
-  <div class="ov show" id="ovIntro">
-    <div class="box">
-      <h1 class="logo">月湖夜钓</h1>
-      <div class="en">Moonlake · Midnight Angler</div>
-      <div class="story">
-        你是月湖边<em>最后一个夜钓人</em>。<br>
-        老渔夫临走前说过：<em>「当满月落在湖心，月神鱼会浮出水面，看见它的人，此生再不会空手而归。」</em><br>
-        今晚，月亮正圆。三个夜晚，三场月色——<em>去把传说钓上来。</em>
+  <div class="ov show" id="ovIntro" data-page-node-id="xyG80JieBSBO2qwNHAh9sv">
+    <div class="box" data-page-node-id="qPt17bS9yc3R1mXHj0vkJh">
+      <h1 class="logo" data-page-node-id="BDoFqBIpOFpQsg36G1PiCb">月湖夜钓</h1>
+      <div class="en" data-page-node-id="ny4bdEfHFLXhdt3ivKIXLb">Moonlake · Midnight Angler</div>
+      <div class="story" data-page-node-id="TcyPXGJx51NDx9X3qmGGN7">
+        你是月湖边<em data-page-node-id="HqGAeC06Lfu7TqfecXYlhY">最后一个夜钓人</em>。<br data-page-node-id="eOn1WJBZMv0OdYANx2K2ly">
+        老渔夫临走前说过：<em data-page-node-id="6nXQQAtglMXNsGyk9vyNMR">「当满月落在湖心，月神鱼会浮出水面，看见它的人，此生再不会空手而归。」</em><br data-page-node-id="l4kDaVQQPn2AYPRe7dsazm">
+        今晚，月亮正圆。三个夜晚，三场月色——<em data-page-node-id="SGt9VYJAeEAv8dJd3QPDyC">去把传说钓上来。</em>
       </div>
-      <div class="rules">
-        <div><b>🎯 瞄准</b> <kbd>←</kbd><kbd>→</kbd> 左右 · <kbd>↑</kbd><kbd>↓</kbd> 深浅（鱼分层而居）</div>
-        <div><b>🎣 抛竿</b> <kbd>空格</kbd> / <kbd>钓</kbd>：抛竿 → 等咬钩 → <b>「!」亮起瞬间收竿</b></div>
-        <div><b>💪 拉扯</b> 光标进绿区时按 <kbd>空格</kbd> 收线，张力爆表会断线</div>
-        <div><b>✋ 徒手</b> 点鱼直接抓：分数 <b>×50%</b>，但稀有鱼抓不住</div>
-        <div><b>🔥 连击</b> 3 秒内连续上鱼 → 最高 <b>×5</b> 倍率</div>
+      <div class="rules" data-page-node-id="6ps1KpsbIVC70pmjG2NdVK">
+        <div data-page-node-id="1RImva9xldKSIvgZpKkDc3"><b data-page-node-id="0mVdMV8bParna8GUDbJ2hL">🎯 瞄准</b> <kbd data-page-node-id="CCW7bNvUhCQ149FbPRFF0m">←</kbd><kbd data-page-node-id="qIFtbUPYPyonIbHCL5Mqia">→</kbd> 左右 · <kbd data-page-node-id="8TtUhyXaY1euiRQ5sNHzbF">↑</kbd><kbd data-page-node-id="E4O4FLMGCLjaWawIA8JouZ">↓</kbd> 深浅（鱼分层而居）</div>
+        <div data-page-node-id="CRzgIAeHdNEDzZzQByUEgX"><b data-page-node-id="WZ1MmyaRYadzAWYErlXAzu">🎣 抛竿</b> <kbd data-page-node-id="otOs3kPwQ0579iOC8wCEUM">空格</kbd> / <kbd data-page-node-id="peXGROlQdhi1vTYVCCc8EQ">钓</kbd>：抛竿 → 等咬钩 → <b data-page-node-id="Am78s04xvmLLx8HeyHV9UV">「!」亮起瞬间收竿</b></div>
+        <div data-page-node-id="hmh0mtPlrueK0DQ6F4ruUg"><b data-page-node-id="NayNxgHQTHJBJmyuvCdPLP">💪 拉扯</b> 光标进绿区时按 <kbd data-page-node-id="krgq1muWnU4YBCttzDFTNp">空格</kbd> 收线，张力爆表会断线</div>
+        <div data-page-node-id="ue8z2Vovg1IeLJddGrSUSB"><b data-page-node-id="HnghH8Y17tvLhXYSFlYtAh">✋ 徒手</b> 点鱼直接抓：分数 <b data-page-node-id="4yLxk6XUVR4skI7lEZCu1J">×50%</b>，但稀有鱼抓不住</div>
+        <div data-page-node-id="Cot8gDpVBt0m6oex1s9BKV"><b data-page-node-id="vRN40WYzWARNujMQ0N8RgD">🔥 连击</b> 3 秒内连续上鱼 → 最高 <b data-page-node-id="3mSjnfrWT6djlYmY4gYjdk">×5</b> 倍率</div>
+        <div><b>🐟 卖鱼</b> 一夜结束后去<b>处理台刮鳞</b> → <b>市场卖钱 / 厨房做菜</b>，赚的钱能买<b>永久升级</b></div>
       </div>
-      <div class="btnrow">
-        <button class="btn" id="btnStart">开 始 夜 钓</button>
-        <button class="btn ghost" id="btnDex">图 鉴</button>
+      <div class="btnrow" data-page-node-id="BD9GeffxWVRd5OrrdxA8TD">
+        <button class="btn" id="btnStart" data-page-node-id="VCWb0VC7pX2jjTWlAxDwYD">开 始 夜 钓</button>
+        <button class="btn ghost" id="btnDex" data-page-node-id="Sh2eYNJGSFQEAOrfMhKkdY">图 鉴</button>
       </div>
-      <div class="best">历史最高总分 <b id="bestIntro">0</b></div>
+      <div class="best" data-page-node-id="af5Ns7ACVGhzbxGR8Z2R5V">历史最高总分 <b id="bestIntro" data-page-node-id="PFA7JyGqV5uH23GEf5ZXe7">0</b></div>
     </div>
   </div>
 
   <!-- 图鉴 -->
-  <div class="ov" id="ovDex">
-    <div class="box">
-      <h2 class="tt">鱼 类 图 鉴</h2>
-      <div class="sub2">越深的鱼越值钱，也越难缠</div>
-      <div class="dexgrid" id="dexGrid"></div>
-      <div class="btnrow"><button class="btn ghost" id="btnDexBack">返 回</button></div>
+  <div class="ov" id="ovDex" data-page-node-id="rWWaZyDAacZi6t1kdrj1tN">
+    <div class="box" data-page-node-id="Oade1mjApaNOkwSc3NfamQ">
+      <h2 class="tt" data-page-node-id="LjyRGh4Z5pSmoC03poH3h9">鱼 类 图 鉴</h2>
+      <div class="sub2" data-page-node-id="6Cv5exGaJ9T3d8aFi9A0Cw">越深的鱼越值钱，也越难缠</div>
+      <div class="dexgrid" id="dexGrid" data-page-node-id="VOOgKLX1oPr9upOaH6Z2WO"></div>
+      <div class="btnrow" data-page-node-id="JKkViJOYC2vZvDpBdYBGJN"><button class="btn ghost" id="btnDexBack" data-page-node-id="HupJVHNCRj5JGoLJASEzvc">返 回</button></div>
     </div>
   </div>
 
   <!-- 关卡简介 -->
-  <div class="ov" id="ovBrief">
-    <div class="box">
-      <div class="chap" id="brChap">CHAPTER 1</div>
-      <div class="lvt" id="brName">第一章 · 初见月色</div>
-      <div class="lvs" id="brSub">浅滩的银鳞</div>
-      <div class="lvdesc" id="brDesc"></div>
-      <div class="statgrid">
-        <div class="stat"><div class="k">目标分</div><div class="v" id="brTarget">500</div></div>
-        <div class="stat"><div class="k">时限</div><div class="v" id="brTime">70s</div></div>
-        <div class="stat"><div class="k">提前收竿</div><div class="v">+8/s</div></div>
+  <div class="ov" id="ovBrief" data-page-node-id="eOnIBxKsRVRVJQM7kS5nEf">
+    <div class="box" data-page-node-id="9EGAGH7n3WXX7BU7WwZI0V">
+      <div class="chap" id="brChap" data-page-node-id="r1A3Av3yfejZLtgU535PkO">CHAPTER 1</div>
+      <div class="lvt" id="brName" data-page-node-id="rBEbH5PS6CILkWNFJfL50O">第一章 · 初见月色</div>
+      <div class="lvs" id="brSub" data-page-node-id="ZZlYsd4AL1D1HfltLdwFcl">浅滩的银鳞</div>
+      <div class="lvdesc" id="brDesc" data-page-node-id="UH4XxASbK1qYnwkpHjtWJN"></div>
+      <div class="statgrid" data-page-node-id="66qIkCY69g43X9oyyBN2GQ">
+        <div class="stat" data-page-node-id="pJbhCL4tvIGTdK5Kq7sNUf"><div class="k" data-page-node-id="OfCu6DWAfhrzkoGsBQm9ES">目标分</div><div class="v" id="brTarget" data-page-node-id="GmSZcKzT9OGlKBzYJkBHD2">500</div></div>
+        <div class="stat" data-page-node-id="yMvSZczEB0Vt4OJ5D6QL0G"><div class="k" data-page-node-id="DXxGdd1ymMayjsGEKNcw9i">时限</div><div class="v" id="brTime" data-page-node-id="MOMFqu7U5F5dkfFVBAWun4">70s</div></div>
+        <div class="stat" data-page-node-id="0Ps2aihNtaqgjRdJQVhDX6"><div class="k" data-page-node-id="Ca53h1L9YxyFPypw5t9scZ">提前收竿</div><div class="v" data-page-node-id="3gEox7aDEaE9EkQ7pqIMTp">+8/s</div></div>
       </div>
-      <div class="tipbox" id="brTip"></div>
-      <div class="btnrow"><button class="btn" id="btnGo">出 发</button></div>
+      <div class="tipbox" id="brTip" data-page-node-id="Jp51Kp4TUCzWbh8HMRV4t3"></div>
+      <div class="btnrow" data-page-node-id="danCYnmXMhaKB4S024NRhr"><button class="btn" id="btnGo" data-page-node-id="hSDbOImEfVK1pIWyCwUKW9">出 发</button></div>
     </div>
   </div>
 
   <!-- 关卡结算 -->
-  <div class="ov" id="ovResult">
-    <div class="box">
-      <div class="verdict" id="rsVerdict">过 关</div>
-      <div class="sub2" id="rsSub">第一章 · 初见月色</div>
-      <div class="rows">
-        <div class="r"><span>本关渔获</span><span id="rsBase">0</span></div>
-        <div class="r"><span>剩余时间奖励</span><span id="rsTime">0</span></div>
-        <div class="r"><span>最高连击</span><span id="rsCombo">0</span></div>
-        <div class="r"><span>抛竿次数</span><span id="rsCasts">0</span></div>
-        <div class="r"><span>目标分</span><span id="rsTarget">0</span></div>
-        <div class="r total"><span>本关总分</span><span id="rsTotal">0</span></div>
+  <div class="ov" id="ovResult" data-page-node-id="vYz4p4T65HIvcrVl6zn3x1">
+    <div class="box" data-page-node-id="v2HV9xPHR9h26qsVZNAh58">
+      <div class="verdict" id="rsVerdict" data-page-node-id="oBTSdk5lEpEuMKAbZTyW87">过 关</div>
+      <div class="sub2" id="rsSub" data-page-node-id="sXjUk81Gs4FbQKpfESEEV4">第一章 · 初见月色</div>
+      <div class="rows" data-page-node-id="J1iNyXELC2JjjBdmfbi2ZB">
+        <div class="r" data-page-node-id="9OCqSN9Bn6S18gAbgNYUnI"><span data-page-node-id="Y3i92yzBoLqf23P9ffiKBV">本关渔获</span><span id="rsBase" data-page-node-id="BDDF8Ya571EE7G6M30Ip6x">0</span></div>
+        <div class="r" data-page-node-id="GUoTeOTbzkVcCnNeRYGHkG"><span data-page-node-id="W8oDeaOnTWnaHSUEKHtRfo">剩余时间奖励</span><span id="rsTime" data-page-node-id="zQIPUq4yC5EYBTRaneMeLO">0</span></div>
+        <div class="r" data-page-node-id="xwHRG2uLGKL1jA3EEGSHlT"><span data-page-node-id="aldsalOweRUj1ZBcYlv17Q">最高连击</span><span id="rsCombo" data-page-node-id="3whxypFYOf9CQ2N0PJZNQj">0</span></div>
+        <div class="r" data-page-node-id="WOhsYm48vJSaOGPGBN7aSd"><span data-page-node-id="k1caEFBN8hNLrfa3EPUBKm">抛竿次数</span><span id="rsCasts" data-page-node-id="Kr6fHmI55ssbt0IspecRBZ">0</span></div>
+        <div class="r" data-page-node-id="5zdkZ3C7lYcDOzg6SZ0CcW"><span data-page-node-id="prHWcTRhKdx3nNGe9Cl8LA">目标分</span><span id="rsTarget" data-page-node-id="91rlpysww9iwAXIMhguWdt">0</span></div>
+        <div class="r total" data-page-node-id="950yc8GmW2OzXoSycv1LrC"><span data-page-node-id="e8BpJunHux8FNgCekXxO2q">本关总分</span><span id="rsTotal" data-page-node-id="EGkwLx19M6xhy051PztTRF">0</span></div>
       </div>
-      <div class="catchlist" id="rsCatch"></div>
-      <div class="btnrow">
-        <button class="btn" id="btnNext">继 续</button>
-        <button class="btn ghost" id="btnRetry">重 试 本 关</button>
+      <div class="catchlist" id="rsCatch" data-page-node-id="Qmg6LKHeCd6GJAGWt0Ljer"></div>
+      <div class="btnrow" data-page-node-id="p7nmvb2qK3Zzj6JEPP2cxC">
+        <button class="btn" id="btnNext" data-page-node-id="hgqZBnFB6ezqQg5z6mDCon">继 续</button>
+        <button class="btn ghost" id="btnRetry" data-page-node-id="mEYZVfODvObtvY7Auafg0C">重 试 本 关</button>
       </div>
     </div>
   </div>
 
   <!-- 结局 -->
-  <div class="ov" id="ovEnd">
-    <div class="box">
-      <div class="grade" id="edGrade">S</div>
-      <div class="gtitle" id="edTitle">月 光 渔 王</div>
-      <div class="ending" id="edText"></div>
-      <div class="rows">
-        <div class="r"><span>三夜总分</span><span id="edScore">0</span></div>
-        <div class="r"><span>最大连击</span><span id="edCombo">0</span></div>
-        <div class="r"><span>总捕获</span><span id="edCount">0</span></div>
-        <div class="r"><span>图鉴收集</span><span id="edDex">0 / 10</span></div>
-        <div class="r total"><span>历史最高</span><span id="edBest">0</span></div>
+  <div class="ov" id="ovEnd" data-page-node-id="DXCEvgehegqjZc7PrB9hKl">
+    <div class="box" data-page-node-id="K6B0FAXdU7KBA5xRuWZclB">
+      <div class="grade" id="edGrade" data-page-node-id="CeNsZVLEkGv1kB6uE3K0gR">S</div>
+      <div class="gtitle" id="edTitle" data-page-node-id="W6jzOYeop0Kj9cI4bXSnCq">月 光 渔 王</div>
+      <div class="ending" id="edText" data-page-node-id="JfRHVGbBXZMS003ONP8NMH"></div>
+      <div class="rows" data-page-node-id="tmEWsryXW5cM7NeTgIPZXO">
+        <div class="r" data-page-node-id="pek4tLQqzdJuBFduQOOact"><span data-page-node-id="VhHTySTiHPGhfD1LSP8x8r">三夜总分</span><span id="edScore" data-page-node-id="EdQ9n71TRFRjd811sfoQwL">0</span></div>
+        <div class="r" data-page-node-id="YpPwVBpDkMpcK7BV9CNHd1"><span data-page-node-id="8K2T4N9rphRHwWG7YpSw0B">最大连击</span><span id="edCombo" data-page-node-id="bkmYwtsJOMLrdLVBNXs8FE">0</span></div>
+        <div class="r" data-page-node-id="vWvuRRCJZ6MDorQDLfRdMb"><span data-page-node-id="inAs4QhsQais4shxw5NNXC">总捕获</span><span id="edCount" data-page-node-id="IrSUFXblIR9zk4uEWwELBQ">0</span></div>
+        <div class="r" data-page-node-id="afwuek77bJeu3FChUeTGsI"><span data-page-node-id="WYS4vI3UPfzSuDN3GhOnxM">图鉴收集</span><span id="edDex" data-page-node-id="Yb7KJCaBeC7iDTHf2LbxB3">0 / 10</span></div>
+        <div class="r"><span>菜品出品</span><span id="edDish">0 道</span></div>
+        <div class="r"><span>最终身家</span><span id="edCoin">0 金</span></div>
+        <div class="r total" data-page-node-id="VC9Un1gUtIfqpx4RQiU7Dc"><span data-page-node-id="eItEv8CFeB7qVUrpsy6ie5">历史最高</span><span id="edBest" data-page-node-id="1hT6XnTe6s9YakafsEA2pQ">0</span></div>
       </div>
-      <div class="catchlist" id="edCatch"></div>
+      <div class="catchlist" id="edCatch" data-page-node-id="vbJTAv5oQ7ZIISBUtAnVXs"></div>
+      <div class="btnrow" data-page-node-id="6Bc45k2dMXg66uIHEL4Nmw">
+        <button class="btn" id="btnAgain" data-page-node-id="Va2nYb3WEioBKmSv5jWPKd">再 钓 一 夜</button>
+        <button class="btn ghost" id="btnHome" data-page-node-id="sCjtAoKoeKEPbLyy61cUDk">回 到 封 面</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 处理台 -->
+  <div class="ov" id="ovPrep">
+    <div class="box">
+      <h2 class="tt">处 理 台</h2>
+      <div class="sub2" id="prepSub">这一夜的渔获，还带着鳞和泥</div>
+      <div class="story">
+        城里的<em>「月湖食堂」</em>只收刮干净鳞的鱼——<em>刮得越干净、刀口越齐，价越高</em>。<br>
+        握刀要稳：<b>贴着鱼身匀速刮</b>，太快会划破鱼皮，太偏则刮不干净。
+      </div>
+      <div class="catchlist" id="prepList"></div>
       <div class="btnrow">
-        <button class="btn" id="btnAgain">再 钓 一 夜</button>
-        <button class="btn ghost" id="btnHome">回 到 封 面</button>
+        <button class="btn" id="btnPrep">开 始 刮 鳞</button>
+        <button class="btn ghost" id="btnPrepSkip">懒得处理 · 整条贱卖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 渔村 -->
+  <div class="ov" id="ovLodge">
+    <div class="box">
+      <h2 class="tt">月 湖 渔 村</h2>
+      <div class="sub2" id="lodgeSub">天还没亮，趁新鲜换点钱</div>
+      <div class="coinbar">
+        <div>钱包<b id="lgCoin">0</b></div>
+        <div class="mk">今日鱼价<b id="lgMk">×1.00</b></div>
+        <div>身家<b id="lgNet">0</b></div>
+      </div>
+      <div class="tabs">
+        <button class="tab on" data-tab="stock">仓库</button>
+        <button class="tab" data-tab="market">市场</button>
+        <button class="tab" data-tab="kitchen">厨房</button>
+        <button class="tab" data-tab="shop">商店</button>
+      </div>
+      <div id="lgBody"></div>
+      <div class="btnrow" style="margin-top:14px">
+        <button class="btn" id="btnLodgeGo">继 续 夜 钓</button>
+        <button class="btn ghost" id="btnLodgeDex">图 鉴</button>
       </div>
     </div>
   </div>
 
   <!-- 暂停 -->
-  <div class="ov" id="ovPause">
-    <div class="box" id="pauseBox">
-      <h2 class="tt">暂 停</h2>
-      <div class="sub2">月色正好，歇一会儿</div>
-      <div class="btnrow">
-        <button class="btn" id="btnResume">继 续</button>
-        <button class="btn ghost" id="btnQuit">回 到 封 面</button>
+  <div class="ov" id="ovPause" data-page-node-id="lRT2ZGQKsvPoU8WQ1gVfLy">
+    <div class="box" id="pauseBox" data-page-node-id="CmQGpy5C4oJULx01la85CL">
+      <h2 class="tt" data-page-node-id="HBJWCKjdfu2DyRwHuhteYE">暂 停</h2>
+      <div class="sub2" data-page-node-id="LSKOUlQ8GzXtnK8PZ0az1z">月色正好，歇一会儿</div>
+      <div class="btnrow" data-page-node-id="155wRD6OLDWJONV7oyl0nX">
+        <button class="btn" id="btnResume" data-page-node-id="CXOoFrnWO3cl4MFBjv7Y4P">继 续</button>
+        <button class="btn ghost" id="btnQuit" data-page-node-id="ssSjpmO4xTqN5X4IIJgsp0">回 到 封 面</button>
       </div>
     </div>
   </div>
@@ -556,28 +763,72 @@ const SFX = {
    ========================================================= */
 const FISH_DEFS = [
   {id:'minnow', name:'小银鱼', rarity:1, score:20,  size:0.80, spd:1.30, depth:[0.04,0.34],
-   c1:'#e9f2ff', c2:'#8ba3c6', fin:'#cddff7', shape:'fish'},
+   c1:'#e9f2ff', c2:'#8ba3c6', fin:'#cddff7', shape:'fish', price:9,   wt:[0.1,0.4], flesh:'#f2f6fb'},
   {id:'crucian',name:'鲫鱼',   rarity:1, score:35,  size:1.00, spd:1.05, depth:[0.12,0.46],
-   c1:'#dde5d2', c2:'#788b62', fin:'#bcc9a9', shape:'fish', spot:'#5c6d47'},
+   c1:'#dde5d2', c2:'#788b62', fin:'#bcc9a9', shape:'fish', spot:'#5c6d47', price:16, wt:[0.4,1.2], flesh:'#f0efe2'},
   {id:'grass',  name:'草鱼',   rarity:1, score:55,  size:1.22, spd:0.92, depth:[0.24,0.58],
-   c1:'#cbe69d', c2:'#4d7a2c', fin:'#a0c771', shape:'fish'},
+   c1:'#cbe69d', c2:'#4d7a2c', fin:'#a0c771', shape:'fish', price:26, wt:[1.2,3.0], flesh:'#f3ecd8'},
   {id:'carp',   name:'锦鲤',   rarity:2, score:90,  size:1.30, spd:0.88, depth:[0.30,0.66],
-   c1:'#ffd3a4', c2:'#ff5f3a', fin:'#ffb47e', shape:'fish', spot:'#ff8f60', glow:0.28},
+   c1:'#ffd3a4', c2:'#ff5f3a', fin:'#ffb47e', shape:'fish', spot:'#ff8f60', glow:0.28, price:42, wt:[1.0,2.6], flesh:'#ffd9c2'},
   {id:'eel',    name:'月鳗',   rarity:2, score:120, size:1.05, spd:1.15, depth:[0.58,0.94],
-   c1:'#bcc7ff', c2:'#383d8c', fin:'#909bea', shape:'eel'},
+   c1:'#bcc7ff', c2:'#383d8c', fin:'#909bea', shape:'eel', price:55, wt:[0.8,2.0], flesh:'#e6e9f7'},
   {id:'gold',   name:'金鱼',   rarity:3, score:160, size:1.10, spd:1.08, depth:[0.44,0.78],
-   c1:'#fff2ad', c2:'#dfa011', fin:'#ffd85f', shape:'fish', glow:1},
+   c1:'#fff2ad', c2:'#dfa011', fin:'#ffd85f', shape:'fish', glow:1, price:72, wt:[0.6,1.6], flesh:'#fff0c8'},
   {id:'mkoi',   name:'月光锦鲤',rarity:3, score:240, size:1.55, spd:0.82, depth:[0.36,0.74],
-   c1:'#f4f8ff', c2:'#5e7ecf', fin:'#d2e1ff', shape:'fish', spot:'#89a8ea', glow:1},
+   c1:'#f4f8ff', c2:'#5e7ecf', fin:'#d2e1ff', shape:'fish', spot:'#89a8ea', glow:1, price:110, wt:[2.0,5.0], flesh:'#f2f7ff'},
   {id:'lantern',name:'灯笼鱼',  rarity:3, score:200, size:1.00, spd:0.76, depth:[0.66,0.98],
-   c1:'#ffdcae', c2:'#7a4718', fin:'#e9ba7c', shape:'fish', lantern:true, glow:0.65},
+   c1:'#ffdcae', c2:'#7a4718', fin:'#e9ba7c', shape:'fish', lantern:true, glow:0.65, price:92, wt:[1.0,2.4], flesh:'#ffe3c0'},
   {id:'star',   name:'流星鱼',  rarity:4, score:340, size:1.25, spd:1.55, depth:[0.10,0.44],
-   c1:'#fff4c8', c2:'#ff6fd0', fin:'#ffd2f2', shape:'fish', glow:1.25, rare:true},
+   c1:'#fff4c8', c2:'#ff6fd0', fin:'#ffd2f2', shape:'fish', glow:1.25, rare:true, price:155, wt:[1.4,3.2], flesh:'#ffe8f6'},
   {id:'moon',   name:'月神鱼',  rarity:5, score:600, size:1.80, spd:0.95, depth:[0.46,0.90],
-   c1:'#ffffff', c2:'#8fa8ff', fin:'#e2ebff', shape:'fish', glow:1.7, rare:true}
+   c1:'#ffffff', c2:'#8fa8ff', fin:'#e2ebff', shape:'fish', glow:1.7, rare:true, price:290, wt:[4.0,9.0], flesh:'#ffffff'}
 ];
 const FISH_BY_ID = {};
 FISH_DEFS.forEach(d=>FISH_BY_ID[d.id]=d);
+
+/* ---------- 经营链数据 ---------- */
+// 品质：刮得越干净、刀伤越少 → 越值钱
+const QUALITY = {
+  S:{n:'极上',   cls:'qS',   m:2.00},
+  A:{n:'上等',   cls:'qA',   m:1.50},
+  B:{n:'普通',   cls:'qB',   m:1.05},
+  C:{n:'破损',   cls:'qC',   m:0.60},
+  raw:{n:'未处理', cls:'qRaw', m:0.50}
+};
+// 菜谱：把处理好的鱼做成菜，售价更高，但要做火候 QTE
+const RECIPES = [
+  {id:'r_minnow', name:'银鱼煎饼',   icon:'🥞', need:'minnow', minQ:'B', mult:1.85,
+   desc:'小银鱼裹面糊煎到金黄，渔村孩子的早饭。'},
+  {id:'r_crucian',name:'鲫鱼豆腐汤', icon:'🍲', need:'crucian',minQ:'B', mult:1.90,
+   desc:'奶白色的汤，据说能驱走湖上的寒气。'},
+  {id:'r_grass',  name:'草鱼生鱼片', icon:'🍣', need:'grass',  minQ:'A', mult:2.25,
+   desc:'刀工要快，鱼肉要脆。破皮的鱼做不了。'},
+  {id:'r_carp',   name:'锦鲤刺身',   icon:'🍥', need:'carp',   minQ:'A', mult:2.10,
+   desc:'橙红的肉，摆盘时像一片晚霞。'},
+  {id:'r_eel',    name:'蒲烧月鳗',   icon:'🍱', need:'eel',    minQ:'B', mult:2.35,
+   desc:'酱汁要刷三遍，每一遍都要烤干。'},
+  {id:'r_gold',   name:'金丝鱼球',   icon:'🍡', need:'gold',   minQ:'A', mult:2.15,
+   desc:'把鱼肉打成绒，炸出来能立住筷子。'},
+  {id:'r_mkoi',   name:'月光鱼冻',   icon:'🍮', need:'mkoi',   minQ:'A', mult:2.25,
+   desc:'凉透了会透出淡淡的蓝，像一块月亮。'},
+  {id:'r_lantern',name:'灯笼鱼锅',   icon:'🫕', need:'lantern',minQ:'B', mult:2.45,
+   desc:'鱼头里的灯还能亮，端上桌时客人都在看。'},
+  {id:'r_star',   name:'流星炙烤',   icon:'🔥', need:'star',   minQ:'A', mult:2.65,
+   desc:'只炙一面，三秒起锅。多一秒就老了。'},
+  {id:'r_moon',   name:'月神全席',   icon:'🌙', need:'moon',   minQ:'S', mult:3.10,
+   desc:'传说中的一桌菜。老渔夫说，做完这道菜就可以收竿了。'}
+];
+const RECIPE_BY_FISH = {};
+RECIPES.forEach(r=>RECIPE_BY_FISH[r.need]=r);
+// 商店升级：用渔获换来的钱，让下一夜更好过
+const UPGRADES = [
+  {id:'hook2', name:'淬银钩',   max:3, cost:[100,190,330],  desc:'拉扯判定区 +12% / 级'},
+  {id:'line',  name:'韧丝线',   max:3, cost:[120,220,380],  desc:'断线张力上限 +15% / 级'},
+  {id:'basket',name:'深口鱼篓', max:3, cost:[90,170,300],   desc:'徒手抓鱼分数 50%→70%→85%→100%'},
+  {id:'knife', name:'薄刃刮刀', max:2, cost:[110,240],      desc:'刮鳞更稳：容错 +30% / 级'},
+  {id:'pan',   name:'熟铁锅',   max:2, cost:[130,260],      desc:'火候判定区 +20% / 级'},
+  {id:'sign',  name:'老字号招牌',max:3, cost:[150,280,480], desc:'所有售价 +10% / 级'}
+];
 
 const HAZARD_DEF = {id:'jelly', name:'水母', score:-25, c1:'#f0c8ff', c2:'#8b4fd2', shape:'jelly'};
 
@@ -657,27 +908,48 @@ function buildSkyCache(){
   const c = skyCache.getContext('2d');
   c.setTransform(DPR,0,0,DPR,0,0);
 
+  // 底色：顶部墨蓝 → 地平线靛紫（略带一点暖，避免死板的纯蓝）
   const g = c.createLinearGradient(0,0,0,sY);
-  g.addColorStop(0,   '#030520');
-  g.addColorStop(0.42,'#0a1140');
-  g.addColorStop(0.78,'#172367');
-  g.addColorStop(1,   '#2b3585');
+  g.addColorStop(0,   '#02040f');
+  g.addColorStop(0.30,'#060c2c');
+  g.addColorStop(0.58,'#0d1547');
+  g.addColorStop(0.82,'#1b2470');
+  g.addColorStop(0.95,'#33306e');
+  g.addColorStop(1,   '#4a3a6a');
   c.fillStyle = g; c.fillRect(0,0,W,sY);
+
+  // 星云：几团低饱和柔光，打散"整块纯色渐变"的廉价感
+  const neb = [
+    [0.17,0.26,'116,88,206',0.16,0.44],
+    [0.63,0.15,'58,118,216',0.13,0.40],
+    [0.87,0.43,'186,92,168',0.10,0.32],
+    [0.38,0.56,'48,158,188',0.08,0.28]
+  ];
+  c.globalCompositeOperation='lighter';
+  for(const n of neb){
+    const R = Math.max(60, Math.min(W,H)*n[4]);
+    const rg = c.createRadialGradient(n[0]*W, n[1]*sY, 0, n[0]*W, n[1]*sY, R);
+    rg.addColorStop(0,   `rgba(${n[2]},${n[3]})`);
+    rg.addColorStop(0.5, `rgba(${n[2]},${n[3]*0.34})`);
+    rg.addColorStop(1,   `rgba(${n[2]},0)`);
+    c.fillStyle = rg; c.fillRect(0,0,W,sY);
+  }
+  c.globalCompositeOperation='source-over';
 
   // 银河
   c.save();
   c.translate(W*0.52, sY*0.24); c.rotate(-0.42);
   const mw = c.createLinearGradient(0,-sY*0.17,0,sY*0.17);
   mw.addColorStop(0,   'rgba(120,150,255,0)');
-  mw.addColorStop(0.42,'rgba(150,175,255,0.10)');
-  mw.addColorStop(0.55,'rgba(200,215,255,0.16)');
-  mw.addColorStop(0.68,'rgba(150,175,255,0.09)');
+  mw.addColorStop(0.42,'rgba(150,175,255,0.09)');
+  mw.addColorStop(0.55,'rgba(200,215,255,0.15)');
+  mw.addColorStop(0.68,'rgba(150,175,255,0.08)');
   mw.addColorStop(1,   'rgba(120,150,255,0)');
   c.fillStyle = mw; c.fillRect(-W*0.75,-sY*0.17,W*1.5,sY*0.34);
   for(let i=0;i<340;i++){
     const x = rand(-W*0.7,W*0.7), y = rand(-sY*0.15,sY*0.15);
-    const d = Math.abs(y)/(sY*0.16);
-    c.fillStyle = `rgba(220,232,255,${(1-d)*rand(0.05,0.4)})`;
+    const dd = Math.abs(y)/(sY*0.16);
+    c.fillStyle = `rgba(220,232,255,${(1-dd)*rand(0.05,0.4)})`;
     c.fillRect(x,y,rand(0.6,1.5),rand(0.6,1.5));
   }
   c.restore();
@@ -687,22 +959,39 @@ function buildSkyCache(){
     c.fillStyle = `rgba(${s.c},${s.a})`;
     c.beginPath(); c.arc(s.x*W, s.y*sY, s.r, 0, TAU); c.fill();
   }
-  // 远山
-  c.fillStyle = '#05081c';
-  c.beginPath(); c.moveTo(0,sY);
-  c.lineTo(0, sY-18);
-  for(let x=0;x<=W;x+=12){
-    const h = 16 + Math.sin(x*0.0055)*13 + Math.sin(x*0.0131+1.7)*7 + Math.sin(x*0.0031+3)*9;
-    c.lineTo(x, sY-h-6);
+
+  // 远山三层：越远越淡越蓝（大气透视），近处是对岸树林剪影
+  const ridge = (hBase, hAmp, ph, color)=>{
+    c.beginPath(); c.moveTo(0, sY);
+    for(let x=0;x<=W;x+=7){
+      const h = hBase + Math.sin(x*0.0042+ph)*hAmp
+                      + Math.sin(x*0.0091+ph*2.3)*hAmp*0.48
+                      + Math.sin(x*0.0022+ph*3.1)*hAmp*0.82;
+      c.lineTo(x, sY-h);
+    }
+    c.lineTo(W, sY); c.closePath();
+    c.fillStyle = color; c.fill();
+  };
+  ridge(sY*0.23, sY*0.058, 0.6, 'rgba(58,76,140,.48)');
+  ridge(sY*0.15, sY*0.044, 2.4, '#111a44');
+  ridge(sY*0.09, sY*0.030, 4.1, '#070c22');
+
+  // 山脚的雾，把山"泡"进空气里
+  const hg = c.createLinearGradient(0, sY-30, 0, sY);
+  hg.addColorStop(0,'rgba(126,156,224,0)');
+  hg.addColorStop(1,'rgba(132,162,226,.16)');
+  c.fillStyle = hg; c.fillRect(0, sY-30, W, 30);
+
+  // 对岸人家的灯火
+  for(let i=0;i<3;i++){
+    const lx = W*(0.11+i*0.085) + Math.sin(i*2.1)*20;
+    const ly = sY - 7 - i*2.5;
+    const lg = c.createRadialGradient(lx,ly,0,lx,ly,15);
+    lg.addColorStop(0,  'rgba(255,216,146,.85)');
+    lg.addColorStop(0.3,'rgba(255,182,94,.26)');
+    lg.addColorStop(1,  'rgba(255,170,80,0)');
+    c.fillStyle = lg; c.beginPath(); c.arc(lx,ly,15,0,TAU); c.fill();
   }
-  c.lineTo(W,sY); c.closePath(); c.fill();
-  c.fillStyle = 'rgba(30,44,110,.55)';
-  c.beginPath(); c.moveTo(0,sY);
-  for(let x=0;x<=W;x+=12){
-    const h = 8 + Math.sin(x*0.0082+2.2)*6 + Math.sin(x*0.017+0.4)*3;
-    c.lineTo(x, sY-h);
-  }
-  c.lineTo(W,sY); c.closePath(); c.fill();
 }
 
 const seaweed = [], pebbles = [], snow = [], bubbles = [];
@@ -801,7 +1090,7 @@ function drawParts(){
    6. 游戏状态
    ========================================================= */
 const S = {
-  phase:'intro',        // intro | brief | play | result | end | pause
+  phase:'intro',        // intro | brief | play | result | prep | scale | cook | lodge | end | pause
   levelIdx:0,
   score:0, totalScore:0,
   time:0, timeLeft:0,
@@ -813,8 +1102,27 @@ const S = {
   dex:{},               // id -> count
   levelCatch:{},        // 本关
   shake:0,
-  gt:0                  // 全局动画时间
+  gt:0,                 // 全局动画时间
+
+  /* --- 经营链 --- */
+  coins:0,              // 钱包
+  basket:[],            // 本关渔获（刚上岸，带鳞）
+  stock:[],             // 仓库：{uid, kind:'fish'|'dish', id, name, q, wt, base, icon}
+  upg:{},               // 升级等级 id -> lv
+  market:1,             // 今日鱼价倍率
+  earned:0,             // 累计收入
+  dishMade:0,
+  dexBack:'intro',
+  uid:1,
+  tut:-1                // 新手教学步骤；-1 = 未开始/已结束
 };
+const upgLv = id => S.upg[id] || 0;
+function loadFlag(k){ try{ return localStorage.getItem('moonlake.f.'+k)==='1'; }catch(e){ return false; } }
+function saveFlag(k){ try{ localStorage.setItem('moonlake.f.'+k,'1'); }catch(e){} }
+function loadUpg(){ try{ return JSON.parse(localStorage.getItem('moonlake.upg')||'{}'); }catch(e){ return {}; } }
+function saveUpg(){ try{ localStorage.setItem('moonlake.upg', JSON.stringify(S.upg)); }catch(e){} }
+function loadCoins(){ try{ return +(localStorage.getItem('moonlake.coins')||0); }catch(e){ return 0; } }
+function saveCoins(){ try{ localStorage.setItem('moonlake.coins', String(Math.round(S.coins))); }catch(e){} }
 
 const hook = {
   x:0, y:0, tx:0, depth:0,
@@ -992,9 +1300,10 @@ function onBitePress(){
     m:0.5, dir:1,
     speed: 0.95 + rarity*0.07,
     zone: rand(0.12,0.6),
-    zw: Math.max(0.20, (0.40 - rarity*0.028)) * (S.buffs.hook>0 ? 1.6 : 1),
+    zw: Math.max(0.20, (0.40 - rarity*0.028)) * (S.buffs.hook>0 ? 1.6 : 1) * (1 + 0.12 * upgLv('hook2')),
     need: 3 + rarity,
-    struggle: 0, hits:0
+    struggle: 0, hits:0,
+    tensionMax: 100 + upgLv('line') * 15
   };
   hook.state='fight';
   SFX.hit();
@@ -1019,7 +1328,7 @@ function fightPress(){
     SFX.miss();
     label(hook.x, hook.y-16, '空拉…', '255,140,140', 12);
   }
-  if(fight.tension >= 100){ endFight(false, '断线了！鱼跑了'); return; }
+  if(fight.tension >= fight.tensionMax){ endFight(false, '断线了！鱼跑了'); return; }
   if(fight.prog >= 100){ endFight(true); }
 }
 
@@ -1046,6 +1355,7 @@ function updateFight(dt){
 function endFight(win, msg){
   const f = fight.fish;
   fight = null;
+  tutEvent('fightend');
   if(win){
     hook.state='land'; hook.anim=0;
   } else {
@@ -1115,6 +1425,7 @@ function moveAim(dx,dy){
   hook.tx = clamp(hook.tx + dx*26, hookMinX(), hookMaxX());
   hook.depth = clamp(hook.depth + dy*22, minDepth(), maxDepth());
   if(hook.state==='wait'){ /* 微调 */ }
+  tutEvent('aim');
 }
 
 function updateHook(dt){
@@ -1231,10 +1542,11 @@ function tapCatch(px, py){
         return;
       }
       S.tapCd = 850;
-      const gained = addScore(Math.round(d.score*0.5), d.name, 'keep');
+      const ratio = [0.50, 0.70, 0.85, 1.00][upgLv('basket')];
+      const gained = addScore(Math.round(d.score*ratio), d.name, 'keep');
       SFX.catchN(false);
       label(f.x, f.y-18, `+${gained} 徒手`, '190,225,255', 14);
-      showToast(`+${gained} 分`, `徒手抓 · ${d.name}（无倍率，可续连击）`);
+      showToast(`+${gained} 分`, `徒手抓 · ${d.name}（×${Math.round(ratio*100)}%）`);
       recordCatch(d);
       removeEntity(f, fishes);
       setTimeout(()=>{ if(S.phase==='play') refillFish(); }, 420);
@@ -1318,6 +1630,8 @@ function recordCatch(d){
   S.dex[d.id] = (S.dex[d.id]||0) + 1;
   S.levelCatch[d.id] = (S.levelCatch[d.id]||0) + 1;
   pushLog(d, S.levelCatch[d.id]);
+  if(d && d.price) S.basket.push({ uid:S.uid++, id:d.id, wt:+rand(d.wt[0], d.wt[1]).toFixed(2) });
+  tutEvent('catch');
 }
 
 /* =========================================================
@@ -1393,7 +1707,8 @@ function syncHUD(){
 /* 遮罩控制 */
 const OV = {
   intro:$('ovIntro'), dex:$('ovDex'), brief:$('ovBrief'),
-  result:$('ovResult'), end:$('ovEnd'), pause:$('ovPause')
+  result:$('ovResult'), end:$('ovEnd'), pause:$('ovPause'),
+  prep:$('ovPrep'), lodge:$('ovLodge')
 };
 function showOv(el){ Object.values(OV).forEach(o=>o.classList.remove('show')); if(el) el.classList.add('show'); }
 function hideAllOv(){ Object.values(OV).forEach(o=>o.classList.remove('show')); }
@@ -1418,6 +1733,7 @@ function startLevel(){
   S.phase = 'play';
   setStatus('准备抛竿 · ←→ 瞄准 · ↑↓ 深浅');
   banner(L.name);
+  if(S.tut < 0 && !loadTut() && S.levelIdx === 0) tutStart();   // 第一次上手带一遍
 }
 
 function gotoBrief(){
@@ -1467,16 +1783,31 @@ function endLevel(){
   });
 
   const isLast = S.levelIdx >= LEVELS.length-1;
-  $('btnNext').textContent = pass ? (isLast ? '查 看 结 局' : '下 一 章') : '继 续';
+  $('btnNext').textContent = pass ? '处 理 渔 获' : '继 续';
+  void isLast;
   if(pass) SFX.fanfare(); else SFX.sad();
   showOv(OV.result);
 }
 
 function nextStep(){
   if(!S.finalPass){ startLevel(); return; }          // 未达标 → 重打本关
-  if(S.levelIdx >= LEVELS.length-1){ showEnding(); return; }
-  S.levelIdx++;
-  gotoBrief();
+  gotoPrep();
+}
+/* 关卡结束 → 先处理渔获（刮鳞），再进渔村卖钱 */
+function gotoPrep(){
+  const n = S.basket.length;
+  if(!n){ openLodge(); return; }
+  S.phase = 'prep';
+  $('prepSub').textContent = '这一夜钓上 ' + n + ' 条'
+    + (n > SC_MAX ? `（手动处理前 ${SC_MAX} 条，其余按「普通」入库）` : '，趁新鲜处理掉');
+  const cnt = {};
+  S.basket.forEach(b=>{ cnt[b.id] = (cnt[b.id]||0)+1; });
+  const cl = $('prepList'); cl.innerHTML = '';
+  Object.keys(cnt).forEach(id=>{
+    const d = FISH_BY_ID[id];
+    cl.innerHTML += `<span class="chip">${d.name} <b>×${cnt[id]}</b></span>`;
+  });
+  showOv(OV.prep);
 }
 
 /* 提前收竿：把剩余时间兑换成分数（达标后出现） */
@@ -1513,6 +1844,8 @@ function showEnding(){
   $('edCount').textContent = S.caughtTotal;
   const got = FISH_DEFS.filter(d=>S.dex[d.id]).length;
   $('edDex').textContent = `${got} / ${FISH_DEFS.length}`;
+  $('edDish').textContent = S.dishMade + ' 道';
+  $('edCoin').textContent = Math.round(S.coins) + ' 金';
 
   const best = loadBest();
   if(S.totalScore > best){
@@ -1535,6 +1868,8 @@ function showEnding(){
 function restartAll(){
   S.levelIdx=0; S.totalScore=0; S.caughtTotal=0; S.maxComboAll=0;
   S.dex = loadDex();
+  S.basket = []; S.stock = []; S.earned = 0; S.dishMade = 0;
+  S.upg = loadUpg(); S.coins = loadCoins();
   gotoBrief();
 }
 function goHome(){
@@ -1552,6 +1887,246 @@ function saveDex(){ try{ localStorage.setItem('moonlake.dex', JSON.stringify(S.d
 /* =========================================================
    13. 绘制
    ========================================================= */
+/* ---------- 13.0 颜色工具 ---------- */
+function hex2rgb(h){
+  h = String(h).replace('#','');
+  if(h.length===3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
+  const n = parseInt(h,16);
+  return [(n>>16)&255, (n>>8)&255, n&255];
+}
+function rgbStr(c,a){
+  const r=c[0]|0, g=c[1]|0, b=c[2]|0;
+  return a===undefined ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
+}
+function mixC(a,b,t){ return [lerp(a[0],b[0],t), lerp(a[1],b[1],t), lerp(a[2],b[2],t)]; }
+
+/* ---------- 13.1 后处理：Bloom + 水面倒影 ---------- */
+let POST_ON = true;
+let bloomA=null, bloomB=null, bctxA=null, bctxB=null, refCv=null, rctx=null;
+function buildPost(){
+  try{
+    const bw = Math.max(2, Math.ceil(W*0.26)), bh = Math.max(2, Math.ceil(H*0.26));
+    bloomA = document.createElement('canvas'); bloomA.width=bw;  bloomA.height=bh;
+    bloomB = document.createElement('canvas');
+    bloomB.width = Math.max(2, Math.ceil(bw/3.2)); bloomB.height = Math.max(2, Math.ceil(bh/3.2));
+    bctxA = bloomA.getContext('2d'); bctxB = bloomB.getContext('2d');
+    const rh = Math.max(2, Math.ceil(Math.min(150, H*0.20)));
+    refCv = document.createElement('canvas');
+    refCv.width  = Math.max(2, Math.ceil(W*0.5));
+    refCv.height = Math.max(2, Math.ceil(rh*0.5));
+    rctx = refCv.getContext('2d');
+  }catch(e){ bloomA=null; }
+}
+/* 亮部提取（三次幂）→ 两级降采样 → lighter 叠加。纯 drawImage，无 filter 依赖 */
+function applyBloom(){
+  if(!bloomA) return;
+  const bw=bloomA.width, bh=bloomA.height;
+  bctxA.globalCompositeOperation='source-over';
+  bctxA.clearRect(0,0,bw,bh);
+  bctxA.drawImage(cv,0,0,bw,bh);
+  bctxA.globalCompositeOperation='multiply';
+  bctxA.drawImage(cv,0,0,bw,bh);
+  bctxA.drawImage(cv,0,0,bw,bh);
+  bctxA.globalCompositeOperation='source-over';
+  const bw2=bloomB.width, bh2=bloomB.height;
+  bctxB.globalCompositeOperation='source-over';
+  bctxB.clearRect(0,0,bw2,bh2);
+  bctxB.drawImage(bloomA,0,0,bw2,bh2);
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.globalAlpha=0.38; ctx.drawImage(bloomA,0,0,W,H);
+  ctx.globalAlpha=0.48; ctx.drawImage(bloomB,0,0,W,H);
+  ctx.restore();
+}
+/* 把天空在贴近水面的一条裁下来，分段翻转画进水下 —— 水面就有镜面了 */
+function drawReflection(sY){
+  if(!rctx) return;
+  const rh = Math.min(150, waterH()*0.5);
+  const rw = refCv.width, rhp = refCv.height;
+  rctx.setTransform(1,0,0,1,0,0);
+  rctx.clearRect(0,0,rw,rhp);
+  try{
+    rctx.drawImage(cv, 0, (sY-rh)*DPR, W*DPR, rh*DPR, 0, 0, rw, rhp);
+  }catch(e){ return; }
+  const N = 9, segH = rhp/N;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  ctx.globalAlpha = 0.20;
+  for(let i=0;i<N;i++){
+    const t = i/N;
+    const sy = Math.max(0, rhp*(1-t) - segH);
+    const off = Math.sin(S.gt*0.0016 + t*3.4)*4.5 + Math.sin(S.gt*0.0031 + t*7.2)*2.2;
+    ctx.drawImage(refCv, 0, sy, rw, segH, off, sY + t*rh, W, rh/N + 1.2);
+  }
+  ctx.restore();
+}
+
+/* ---------- 13.2 鱼的精灵：鳞片 / 高光 / 渐层，一次生成 ---------- */
+const SPR = {};
+function bodyPath(c, s){
+  c.beginPath();
+  c.moveTo(22*s, 0);
+  c.bezierCurveTo(20*s,-6*s, 10*s,-11.2*s, -2*s,-10.2*s);
+  c.bezierCurveTo(-10*s,-9.6*s, -15*s,-7*s, -19*s,-3.4*s);
+  c.quadraticCurveTo(-15.2*s, 0, -19*s, 3.4*s);
+  c.bezierCurveTo(-15*s, 7.4*s, -8*s, 10.6*s, 0*s, 11.2*s);
+  c.bezierCurveTo(10*s, 11.8*s, 19*s, 7*s, 22*s, 0);
+  c.closePath();
+}
+function buildSprite(d){
+  const s = d.size, SS = 2;
+  const halfW = 27*s, halfH = 16*s;
+  const w = Math.max(2, Math.ceil(halfW*2*SS)), h = Math.max(2, Math.ceil(halfH*2*SS));
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  g.setTransform(SS,0,0,SS,0,0);
+  g.translate(halfW, halfH);
+
+  const c1 = hex2rgb(d.c1), c2 = hex2rgb(d.c2);
+  const BW = halfW*2, BH = halfH*2;
+  const box = ()=> g.fillRect(-halfW, -halfH, BW, BH);
+
+  g.save();
+  bodyPath(g, s); g.clip();
+
+  // 主体：背深腹浅 + 环境冷光
+  const bg = g.createLinearGradient(0,-11.5*s, 0, 11.8*s);
+  bg.addColorStop(0,    rgbStr(mixC(c2,[6,10,32],0.30)));
+  bg.addColorStop(0.20, rgbStr(mixC(c2,c1,0.32)));
+  bg.addColorStop(0.44, rgbStr(c1));
+  bg.addColorStop(0.70, rgbStr(mixC(c1,[255,255,255],0.40)));
+  bg.addColorStop(0.90, rgbStr(mixC(c1,[220,238,255],0.58)));
+  bg.addColorStop(1,    rgbStr(mixC(c1,[142,180,232],0.52)));
+  g.fillStyle = bg; box();
+
+  // 鳞片
+  g.lineWidth = Math.max(0.3, 0.45*s);
+  for(let row=0; row<5; row++){
+    const yy = -8.2*s + row*4.15*s;
+    const off = (row%2) ? 1.75*s : 0;
+    for(let col=-1; col<13; col++){
+      const xx = -19*s + col*3.5*s + off;
+      if(xx > 23*s) break;
+      g.strokeStyle = 'rgba(255,255,255,'+(row<2?0.085:0.055)+')';
+      g.beginPath(); g.arc(xx, yy, 2.35*s, -0.58, 2.42); g.stroke();
+      g.strokeStyle = 'rgba(8,14,38,.14)';
+      g.beginPath(); g.arc(xx, yy+0.55*s, 2.35*s, 0.34, 2.76); g.stroke();
+    }
+  }
+  // 侧线
+  g.strokeStyle='rgba(255,255,255,.12)'; g.lineWidth=0.9*s;
+  g.beginPath(); g.moveTo(-17*s,-1.1*s); g.quadraticCurveTo(0,-0.1*s, 18*s,-2.5*s); g.stroke();
+
+  // 背脊暗带 + 月光高光 + 腹部冷反光
+  const dk = g.createLinearGradient(0,-11.5*s, 0,-1.5*s);
+  dk.addColorStop(0,'rgba(3,6,22,.5)'); dk.addColorStop(1,'rgba(3,6,22,0)');
+  g.fillStyle=dk; box();
+  const hl = g.createLinearGradient(0,-10.5*s, 0,-1.5*s);
+  hl.addColorStop(0,'rgba(255,255,255,.26)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=hl; box();
+  const bl = g.createLinearGradient(0, 3.5*s, 0, 11.8*s);
+  bl.addColorStop(0,'rgba(150,205,255,0)'); bl.addColorStop(1,'rgba(168,214,255,.32)');
+  g.fillStyle=bl; box();
+
+  // 斑纹
+  if(d.spot){
+    const sp = hex2rgb(d.spot);
+    let seed = 7; for(let i=0;i<d.id.length;i++) seed += d.id.charCodeAt(i)*31;
+    for(let i=0;i<8;i++){
+      seed=(seed*9301+49297)%233280; const r1=seed/233280;
+      seed=(seed*9301+49297)%233280; const r2=seed/233280;
+      seed=(seed*9301+49297)%233280; const r3=seed/233280;
+      const xx = lerp(-15*s, 18*s, r1), yy = lerp(-7.5*s, 6.5*s, r2), rr = (1.5+r3*2.0)*s;
+      g.fillStyle = rgbStr(sp, 0.5);
+      g.beginPath(); g.ellipse(xx, yy, rr, rr*0.76, 0, 0, TAU); g.fill();
+      g.strokeStyle='rgba(255,255,255,.13)'; g.lineWidth=0.55*s; g.stroke();
+    }
+  }
+  // 内阴影边缘（替代描边，不卡通）
+  g.strokeStyle='rgba(5,9,26,.32)'; g.lineWidth=2.4*s;
+  bodyPath(g, s); g.stroke();
+
+  // 鳃盖
+  g.strokeStyle='rgba(8,14,36,.30)'; g.lineWidth=1.15*s;
+  g.beginPath(); g.moveTo(11*s,-8.8*s); g.quadraticCurveTo(7.2*s,0, 11.6*s,8.5*s); g.stroke();
+  g.strokeStyle='rgba(255,255,255,.15)'; g.lineWidth=0.7*s;
+  g.beginPath(); g.moveTo(12.5*s,-8.5*s); g.quadraticCurveTo(8.7*s,0, 13*s,8.3*s); g.stroke();
+
+  // 眼
+  const ex=15.6*s, ey=-3.2*s, er=2.8*s;
+  g.fillStyle='rgba(10,14,32,.42)';
+  g.beginPath(); g.arc(ex, ey-0.4*s, er*1.05, 0, TAU); g.fill();
+  const eg = g.createRadialGradient(ex-er*0.32, ey-er*0.36, er*0.08, ex, ey, er);
+  eg.addColorStop(0,'#f8fcff'); eg.addColorStop(0.52,'#dde8f6'); eg.addColorStop(1,'#98aac8');
+  g.fillStyle=eg; g.beginPath(); g.arc(ex,ey,er,0,TAU); g.fill();
+  g.fillStyle='#121830'; g.beginPath(); g.arc(ex+0.35*s, ey, er*0.55, 0, TAU); g.fill();
+  g.fillStyle='rgba(130,190,255,.45)'; g.beginPath(); g.arc(ex+0.5*s, ey+0.45*s, er*0.28, 0, TAU); g.fill();
+  g.fillStyle='#ffffff'; g.beginPath(); g.arc(ex-er*0.34, ey-er*0.42, er*0.30, 0, TAU); g.fill();
+  // 嘴
+  g.strokeStyle='rgba(18,24,46,.42)'; g.lineWidth=0.9*s;
+  g.beginPath(); g.moveTo(22*s,0.7*s); g.quadraticCurveTo(19*s,2.3*s, 17.2*s,1.5*s); g.stroke();
+
+  g.restore();
+  SPR[d.id] = { cv:c, w:w/SS, h:h/SS, cx:halfW, cy:halfH };
+  return SPR[d.id];
+}
+/* 半透明鳍：渐变 + 鳍脉，替代原来的纯色块 */
+function drawFins(c, d, s, wag, back){
+  const fin = hex2rgb(d.fin || d.c2);
+  const g = c.createLinearGradient(0,-15*s, 0, 15*s);
+  g.addColorStop(0, rgbStr(mixC(fin,[255,255,255],0.28), 0.80));
+  g.addColorStop(0.5,rgbStr(fin, 0.72));
+  g.addColorStop(1, rgbStr(mixC(fin,[16,26,64],0.30), 0.66));
+  c.fillStyle = g;
+  if(back){
+    // 尾
+    c.save();
+    c.translate(-17*s, 0); c.rotate(wag*0.44);
+    c.beginPath();
+    c.moveTo(2*s,0);
+    c.quadraticCurveTo(-10*s,-2*s, -20*s,-13*s+wag*3);
+    c.quadraticCurveTo(-8.5*s,0, -20*s, 13*s+wag*3);
+    c.quadraticCurveTo(-10*s,2*s, 2*s,0);
+    c.fill();
+    c.strokeStyle='rgba(255,255,255,.10)'; c.lineWidth=0.6*s;
+    for(let i=0;i<4;i++){
+      const t=(i+1)/5;
+      c.beginPath(); c.moveTo(1*s,0);
+      c.quadraticCurveTo(-9*s, lerp(0,-11*s,t)*0.6, -19*s, lerp(0,-12.4*s,t));
+      c.stroke();
+      c.beginPath(); c.moveTo(1*s,0);
+      c.quadraticCurveTo(-9*s, lerp(0,11*s,t)*0.6, -19*s, lerp(0,12.4*s,t));
+      c.stroke();
+    }
+    c.restore();
+    // 背鳍
+    c.beginPath();
+    c.moveTo(-5*s,-6.4*s);
+    c.quadraticCurveTo(-1*s,-16*s+wag*1.6, 9.5*s,-5.6*s);
+    c.quadraticCurveTo(2*s,-8*s, -5*s,-6.4*s);
+    c.fill();
+    // 腹鳍
+    c.beginPath();
+    c.moveTo(-2.5*s, 6.2*s);
+    c.quadraticCurveTo(1*s, 12*s+wag, 5.5*s, 6*s);
+    c.quadraticCurveTo(1*s, 8*s, -2.5*s, 6.2*s);
+    c.fill();
+  } else {
+    // 胸鳍（盖在身上）
+    c.save();
+    c.translate(8.5*s, 2.6*s); c.rotate(0.42 + wag*0.34);
+    c.beginPath();
+    c.moveTo(0,0);
+    c.quadraticCurveTo(-4.5*s, 5.5*s, -10*s, 3.2*s);
+    c.quadraticCurveTo(-5*s, 0.4*s, 0, 0);
+    c.fill();
+    c.strokeStyle='rgba(255,255,255,.12)'; c.lineWidth=0.5*s;
+    c.beginPath(); c.moveTo(-0.5*s,0.5*s); c.lineTo(-8*s,2.6*s); c.stroke();
+    c.restore();
+  }
+}
+
 function drawSky(dt){
   const sY = waterTop();
   if(skyCache) ctx.drawImage(skyCache, 0, 0, W, sY);
@@ -1628,6 +2203,9 @@ function drawWater(){
   g.addColorStop(1,   '#05081a');
   ctx.fillStyle = g; ctx.fillRect(0,sY,W,H-sY);
 
+  // 水面镜面：把贴近水面的天空翻下来
+  drawReflection(sY);
+
   // 焦散
   ctx.save();
   ctx.globalCompositeOperation = 'lighter';
@@ -1646,6 +2224,27 @@ function drawWater(){
 
   // 月影
   drawMoonPath(W*0.735, sY);
+
+  // 水下体积光：斜射的月光柱，缓慢摆动
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  const mx2 = W*0.735;
+  for(let i=0;i<5;i++){
+    const a0 = 0.022 + 0.020*((Math.sin(S.gt*0.0007 + i*1.4)+1)/2);
+    const x0 = mx2 - 130 + i*60 + Math.sin(S.gt*0.0006 + i)*16;
+    const w0 = 24 + i*8;
+    const gg = ctx.createLinearGradient(0, sY, 0, Math.min(H, sY + waterH()*0.9));
+    gg.addColorStop(0, `rgba(176,208,255,${a0})`);
+    gg.addColorStop(1, 'rgba(176,208,255,0)');
+    ctx.fillStyle = gg;
+    ctx.beginPath();
+    ctx.moveTo(x0, sY);
+    ctx.lineTo(x0 + w0, sY);
+    ctx.lineTo(x0 + w0*2.7 - 46, H);
+    ctx.lineTo(x0 - 46, H);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
 
   // 水面线
   ctx.strokeStyle='rgba(180,210,255,.28)'; ctx.lineWidth=1.6;
@@ -1759,6 +2358,19 @@ function drawFishShape(f){
   ctx.translate(f.x, f.y);
   if(d.shape==='jelly'){ drawJelly(f); ctx.restore(); return; }
 
+  // 深度雾：越深越融进水色，避免"贴纸感"
+  const dep = clamp((f.y - waterTop())/Math.max(1, waterH()), 0, 1);
+  ctx.globalAlpha = 1 - dep*0.30;
+
+  // 落在下方的柔和投影
+  ctx.save();
+  ctx.globalAlpha *= 0.20;
+  ctx.translate(2.5*s, 5.5*s);
+  ctx.scale(f.dir, 1);
+  ctx.fillStyle = 'rgba(4,8,24,1)';
+  ctx.beginPath(); ctx.ellipse(0, 0, 21*s, 7*s, 0, 0, TAU); ctx.fill();
+  ctx.restore();
+
   ctx.scale(f.dir, 1);
   ctx.rotate(Math.sin(S.gt*0.0025+f.ph)*0.055);
 
@@ -1766,109 +2378,54 @@ function drawFishShape(f){
     const pl = 0.75+0.25*Math.sin(S.gt*0.004+f.ph);
     const R = 46*s;
     const g = ctx.createRadialGradient(0,0,3*s,0,0,R);
-    g.addColorStop(0, `rgba(255,240,160,${0.42*d.glow*pl})`);
-    g.addColorStop(0.35,`rgba(255,205,90,${0.20*d.glow*pl})`);
+    g.addColorStop(0, `rgba(255,240,160,${0.40*d.glow*pl})`);
+    g.addColorStop(0.35,`rgba(255,205,90,${0.17*d.glow*pl})`);
     g.addColorStop(1,'rgba(255,200,80,0)');
     ctx.fillStyle=g; ctx.beginPath(); ctx.arc(0,0,R,0,TAU); ctx.fill();
-    ctx.shadowColor='rgba(255,214,110,.9)'; ctx.shadowBlur=22*d.glow;
   }
 
   const wag = Math.sin(S.gt*0.008*(d.spd||1) + f.ph);
 
   if(d.shape==='eel'){
-    ctx.strokeStyle = d.c2; ctx.lineWidth = 9*s; ctx.lineCap='round';
-    ctx.beginPath();
-    for(let i=0;i<=14;i++){
-      const t=i/14, x = lerp(20*s, -34*s, t);
-      const y = Math.sin(t*5 + S.gt*0.006 + f.ph)*7*s*(0.25+t*0.75);
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    }
-    ctx.stroke();
-    ctx.strokeStyle = d.c1; ctx.lineWidth = 4*s;
-    ctx.beginPath();
-    for(let i=0;i<=14;i++){
-      const t=i/14, x = lerp(20*s, -34*s, t);
-      const y = Math.sin(t*5 + S.gt*0.006 + f.ph)*7*s*(0.25+t*0.75) - 1.6*s;
-      if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    }
-    ctx.stroke();
+    const c1=hex2rgb(d.c1), c2=hex2rgb(d.c2);
+    ctx.lineCap='round';
+    const path=(ww,oy)=>{
+      ctx.beginPath();
+      for(let i=0;i<=16;i++){
+        const t=i/16, x=lerp(20*s,-36*s,t);
+        const y=Math.sin(t*5 + S.gt*0.006 + f.ph)*7*s*(0.25+t*0.75) + oy;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    };
+    ctx.strokeStyle = rgbStr(mixC(c2,[6,10,32],0.32)); ctx.lineWidth = 10*s;   path(0,0);
+    ctx.strokeStyle = rgbStr(mixC(c2,c1,0.42));        ctx.lineWidth = 6.6*s;   path(0,0);
+    ctx.strokeStyle = 'rgba(228,238,255,.28)';          ctx.lineWidth = 1.8*s;   path(0,-2.1*s);
     ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.arc(19*s,-1.5*s,1.7*s,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(18.6*s,-1.4*s,2.0*s,0,TAU); ctx.fill();
     ctx.fillStyle='#0b1024';
-    ctx.beginPath(); ctx.arc(19.6*s,-1.5*s,1.0*s,0,TAU); ctx.fill();
+    ctx.beginPath(); ctx.arc(19.2*s,-1.4*s,1.15*s,0,TAU); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,.9)';
+    ctx.beginPath(); ctx.arc(18.0*s,-2.2*s,0.7*s,0,TAU); ctx.fill();
     ctx.restore(); return;
   }
 
-  // 尾
-  ctx.save();
-  ctx.translate(-17*s,0); ctx.rotate(wag*0.42);
-  ctx.fillStyle = d.fin || d.c2;
-  ctx.beginPath();
-  ctx.moveTo(2*s,0);
-  ctx.quadraticCurveTo(-10*s,-2*s, -19*s,-12*s+wag*3);
-  ctx.quadraticCurveTo(-8*s,0, -19*s, 12*s+wag*3);
-  ctx.quadraticCurveTo(-10*s,2*s, 2*s,0);
-  ctx.fill();
-  ctx.restore();
+  const sp = SPR[d.id] || buildSprite(d);
+  drawFins(ctx, d, s, wag, true);
+  ctx.drawImage(sp.cv, -sp.cx, -sp.cy, sp.w, sp.h);
+  drawFins(ctx, d, s, wag, false);
 
-  // 背鳍
-  ctx.fillStyle = d.fin || d.c2;
-  ctx.beginPath();
-  ctx.moveTo(-4*s,-6.5*s);
-  ctx.quadraticCurveTo(0,-15*s+wag*1.5, 9*s,-6*s);
-  ctx.fill();
-  // 腹鳍
-  ctx.beginPath();
-  ctx.moveTo(-2*s,6*s);
-  ctx.quadraticCurveTo(1*s,11*s+wag, 5*s,6*s);
-  ctx.fill();
-
-  // 身体
-  const bg = ctx.createLinearGradient(0,-9*s,0,9*s);
-  bg.addColorStop(0, d.c1);
-  bg.addColorStop(0.42, d.c1);
-  bg.addColorStop(1, d.c2);
-  ctx.fillStyle = bg;
-  ctx.beginPath(); ctx.ellipse(0,0,21*s,8.4*s,0,0,TAU); ctx.fill();
-
-  // 高光
-  ctx.fillStyle='rgba(255,255,255,.22)';
-  ctx.beginPath(); ctx.ellipse(4*s,-3.2*s,8*s,2.4*s,-0.12,0,TAU); ctx.fill();
-
-  // 斑纹
-  if(d.spot){
-    ctx.fillStyle = d.spot;
-    for(const sp of f.spots||[]){
-      ctx.beginPath(); ctx.ellipse(sp.dx*s, sp.dy*s, sp.r*s*0.9, sp.r*s*0.62, 0,0,TAU); ctx.fill();
-    }
-  }
-
-  // 胸鳍
-  ctx.fillStyle = d.fin || d.c2;
-  ctx.save(); ctx.translate(2*s,3*s); ctx.rotate(wag*0.7+0.3);
-  ctx.beginPath(); ctx.ellipse(0,3.4*s,5.6*s,2.4*s,0.5,0,TAU); ctx.fill();
-  ctx.restore();
-
-  // 眼
-  ctx.fillStyle='#fff';
-  ctx.beginPath(); ctx.arc(14.6*s,-1.6*s,2.4*s,0,TAU); ctx.fill();
-  ctx.fillStyle='#101826';
-  ctx.beginPath(); ctx.arc(15.4*s,-1.6*s,1.4*s,0,TAU); ctx.fill();
-  ctx.fillStyle='rgba(255,255,255,.85)';
-  ctx.beginPath(); ctx.arc(14.9*s,-2.3*s,0.6*s,0,TAU); ctx.fill();
-
-  // 灯笼
   if(d.lantern){
     const lx = 12*s, ly = -13*s + Math.sin(S.gt*0.003+f.ph)*1.6;
-    ctx.strokeStyle='rgba(220,180,120,.85)'; ctx.lineWidth=1.2*s;
-    ctx.beginPath(); ctx.moveTo(6*s,-6*s); ctx.quadraticCurveTo(12*s,-14*s, lx,ly); ctx.stroke();
-    const lg = ctx.createRadialGradient(lx,ly,0,lx,ly,13*s);
-    lg.addColorStop(0,'rgba(255,240,190,.95)');
-    lg.addColorStop(0.35,'rgba(255,200,110,.5)');
-    lg.addColorStop(1,'rgba(255,180,80,0)');
-    ctx.fillStyle=lg; ctx.beginPath(); ctx.arc(lx,ly,13*s,0,TAU); ctx.fill();
-    ctx.fillStyle='rgba(255,250,220,.95)';
-    ctx.beginPath(); ctx.arc(lx,ly,2.6*s,0,TAU); ctx.fill();
+    ctx.strokeStyle='rgba(214,176,120,.8)'; ctx.lineWidth=1.1*s;
+    ctx.beginPath(); ctx.moveTo(6*s,-6.4*s); ctx.quadraticCurveTo(12*s,-14*s, lx,ly); ctx.stroke();
+    const lg = ctx.createRadialGradient(lx,ly,0,lx,ly,14*s);
+    lg.addColorStop(0,'rgba(255,244,200,.9)');
+    lg.addColorStop(0.3, 'rgba(255,205,115,.45)');
+    lg.addColorStop(1,   'rgba(255,180,80,0)');
+    ctx.fillStyle=lg; ctx.beginPath(); ctx.arc(lx,ly,14*s,0,TAU); ctx.fill();
+    ctx.fillStyle='rgba(255,251,226,.95)';
+    ctx.beginPath(); ctx.arc(lx,ly,2.4*s,0,TAU); ctx.fill();
   }
   ctx.restore();
 }
@@ -2148,7 +2705,10 @@ let dropT = 0;
 function update(dt){
   S.gt += dt;
 
-  if(S.phase==='play'){
+  if(S.phase==='scale') updateScale(dt);
+  else if(S.phase==='cook') updateCook(dt);
+
+  if(S.phase==='play' && S.tut < 0){   // 教学期间不扣时间，让玩家慢慢试
     S.timeLeft -= dt/1000;
     if(S.timeLeft <= 10 && S.timeLeft > 0){
       const s = Math.ceil(S.timeLeft);
@@ -2191,11 +2751,14 @@ function update(dt){
   updateDrops(dt);
   updateParts(dt);
   if(S.shake>0) S.shake = Math.max(0, S.shake - dt*0.03);
+  if(S.phase==='play') tutUpdate();   // 放在状态更新之后，保证当帧就能推进
 }
 
 function render(dt){
   ctx.setTransform(DPR,0,0,DPR,0,0);
   ctx.clearRect(0,0,W,H);
+  if(S.phase==='scale'){ drawScaleScene(dt); if(POST_ON) applyBloom(); drawVignette(); return; }
+  if(S.phase==='cook'){  drawCookScene(dt);  if(POST_ON) applyBloom(); drawVignette(); return; }
   if(S.shake>0.4){
     ctx.translate(rand(-S.shake,S.shake)*0.5, rand(-S.shake,S.shake)*0.5);
   }
@@ -2213,6 +2776,7 @@ function render(dt){
   drawHookObj();
   drawBiteMark();
   drawParts();
+  if(POST_ON) applyBloom();
   drawQTE();
   drawVignette();
 }
@@ -2234,6 +2798,9 @@ window.addEventListener('keydown', e=>{
   const k = e.key;
   if(k===' '||k==='Spacebar'||k==='Enter'){
     e.preventDefault();
+    if(S.phase==='cook'){ cookPress(); return; }
+    if(S.phase==='scale'){ if(!SC.result) finishScale(true); return; }
+    if(S.phase==='prep'){ SFX.init(); startScaling(); return; }
     if(S.phase==='intro'){ SFX.init(); beginFromIntro(); return; }
     if(S.phase==='result'){ nextStep(); return; }
     if(S.phase==='end'){ restartAll(); return; }
@@ -2266,8 +2833,18 @@ document.querySelectorAll('#pad .pbtn').forEach(b=>{
 cv.addEventListener('pointerdown', e=>{
   SFX.init();
   const r = cv.getBoundingClientRect();
-  tapCatch(e.clientX - r.left, e.clientY - r.top);
+  const x = e.clientX - r.left, y = e.clientY - r.top;
+  if(S.phase==='scale'){ scalePointer(x, y, true); return; }
+  if(S.phase==='cook'){ cookPress(); return; }
+  tapCatch(x, y);
 });
+cv.addEventListener('pointermove', e=>{
+  if(S.phase!=='scale') return;
+  const r = cv.getBoundingClientRect();
+  scalePointer(e.clientX - r.left, e.clientY - r.top, SC.down);
+});
+window.addEventListener('pointerup', ()=>{ if(S.phase==='scale') SC.down = false; });
+window.addEventListener('pointercancel', ()=>{ if(S.phase==='scale') SC.down = false; });
 
 function toggleSound(){
   SFX.init(); SFX.on = !SFX.on;
@@ -2289,6 +2866,8 @@ function beginFromIntro(){
   S.levelIdx = 0; S.totalScore = 0; S.caughtTotal = 0; S.maxComboAll = 0;
   S.dex = loadDex();          // 图鉴跨局累计
   S.maxCombo = 0;
+  S.basket = []; S.stock = []; S.earned = 0; S.dishMade = 0;
+  S.upg = loadUpg(); S.coins = loadCoins();   // 身家与升级跨局保留
   gotoBrief();
 }
 $('btnStart').addEventListener('click', beginFromIntro);
@@ -2314,8 +2893,693 @@ function buildDex(){
     g.appendChild(el);
   });
 }
-$('btnDex').addEventListener('click', ()=>{ buildDex(); showOv(OV.dex); });
-$('btnDexBack').addEventListener('click', ()=>{ showOv(OV.intro); });
+$('btnDex').addEventListener('click', ()=>{ buildDex(); S.dexBack='intro'; showOv(OV.dex); });
+$('btnDexBack').addEventListener('click', ()=>{ showOv(S.dexBack==='lodge' ? OV.lodge : OV.intro); });
+
+/* =========================================================
+   15.5 新手教学：第一次上手，手把手带一遍
+   ========================================================= */
+const TUT = [
+  { t:'欢迎来到月湖',
+    b:'你站在栈桥上，面前就是<em>月湖</em>。<br>鱼按<em>深浅分层</em>居住：越深的鱼越值钱，也越难缠。<br>先跟着提示做一遍，一分钟就学会了。',
+    btn:true },
+  { t:'① 先瞄准',
+    b:'用 <kbd>←</kbd><kbd>→</kbd> 左右移动，<kbd>↑</kbd><kbd>↓</kbd> 调整<em>下钩深度</em>。<br>右边的标尺会告诉你这一层住着什么鱼。',
+    ev:'aim',
+    target:()=>({x:hook.x-52, y:hook.depth-46, w:104, h:92}) },
+  { t:'② 抛竿',
+    b:'按 <kbd>空格</kbd> 或点这个<em>「钓」</em>按钮把钩甩出去。',
+    cond:()=>hook.state!=='idle',
+    target:()=>{ const el=document.querySelector('#pad .pbtn.act'); if(!el) return null;
+      const r=el.getBoundingClientRect(), s=stage.getBoundingClientRect();
+      return {x:r.left-s.left-9, y:r.top-s.top-9, w:r.width+18, h:r.height+18}; } },
+  { t:'③ 等它咬钩',
+    b:'钩子沉到你选的深度后，<em>耐心等</em>。<br>鱼漂会动，屏幕上方会亮起<em>「!」</em>——那就是咬钩了。',
+    cond:()=>hook.state==='bite' || !!fight,
+    target:()=>({x:hook.x-46, y:hook.y-46, w:92, h:92}) },
+  { t:'④ 起竿！',
+    b:'<em>「!」亮起的瞬间</em>按 <kbd>空格</kbd> 收竿。<br>越快越准，还能拿到<em>完美起竿 ×1.5</em>。',
+    cond:()=>!!fight,
+    target:()=>({x:hook.x-46, y:hook.y-46, w:92, h:92}) },
+  { t:'⑤ 收线拉扯',
+    b:'指针扫到<em>绿色区域</em>时按 <kbd>空格</kbd> 收线。<br>右上角<em>张力</em>满了会断线——宁可慢一点。',
+    cond:()=>S.tutFightSeen && !fight,
+    target:()=>({x:W/2-Math.min(190,W*0.34), y:H*0.60, w:Math.min(380,W*0.68), h:104}) },
+  { t:'⑥ 徒手也能抓',
+    b:'等鱼上钩太慢时，<em>直接用手指点鱼</em>也能抓到。<br>不过徒手只有 <b>50%</b> 分数，<em>稀有鱼还抓不住</em>——但能给你续上连击。',
+    btn:true },
+  { t:'最后两件事',
+    b:'每关有<em>目标分</em>；达标后左上角会出现<em>「提前收竿」</em>，把剩余时间换成奖励。<br>一夜结束后，渔获要<em>刮鳞处理</em>才能卖个好价——<b>试试看吧。</b>',
+    btn:true }
+];
+function loadTut(){ try{ return localStorage.getItem('moonlake.tut')==='1'; }catch(e){ return false; } }
+function saveTut(){ try{ localStorage.setItem('moonlake.tut','1'); }catch(e){} }
+function tutEvent(n){
+  if(S.tut<0 || !TUT[S.tut]) return;
+  if(TUT[S.tut].ev===n) tutAdvance();
+}
+function tutStart(){
+  if(loadTut()){ S.tut=-1; return; }
+  S.tut = 0; S.tutEv='';
+  $('tut').classList.add('on');
+  tutRender();
+}
+function tutRender(){
+  const st = TUT[S.tut];
+  if(!st){ tutEnd(); return; }
+  $('tutTitle').textContent = st.t;
+  $('tutBody').innerHTML = st.b;
+  $('tutStep').textContent = (S.tut+1) + ' / ' + TUT.length;
+  $('tutHint').textContent = st.btn ? '点「知道了」继续' : '完成后自动继续';
+  $('tutNext').style.display = st.btn ? 'block' : 'none';
+  tutPlace();
+}
+function tutPlace(){
+  const st = TUT[S.tut]; if(!st) return;
+  const hole=$('tutHole'), tip=$('tutTip'), nx=$('tutNext'), pul=$('tutPulser');
+  const t = st.target ? st.target() : null;
+  if(t){
+    hole.style.opacity='1';
+    hole.style.left=t.x+'px'; hole.style.top=t.y+'px';
+    hole.style.width=t.w+'px'; hole.style.height=t.h+'px';
+    const tw = tip.offsetWidth||320, th = tip.offsetHeight||140;
+    let lx = clamp(t.x + t.w/2 - tw/2, 10, Math.max(10, W-tw-10));
+    let ly = t.y + t.h + 18;
+    if(ly + th > H-14) ly = Math.max(12, t.y - th - 18);
+    tip.style.left=lx+'px'; tip.style.top=ly+'px';
+    nx.style.display='none';
+    pul.style.display='block';
+    pul.style.left=(t.x+t.w/2-17)+'px'; pul.style.top=(t.y+t.h/2-17)+'px';
+  } else {
+    hole.style.opacity='0'; hole.style.width='0'; hole.style.height='0';
+    hole.style.left=(W/2)+'px'; hole.style.top=(H/2)+'px';
+    tip.style.left=clamp(W/2-165,10,Math.max(10,W-330))+'px';
+    tip.style.top=clamp(H/2-95,12,H-260)+'px';
+    pul.style.display='none';
+    if(st.btn){ nx.style.display='block';
+      nx.style.left=(W/2-56)+'px';
+      nx.style.top=(parseFloat(tip.style.top||'0')+(tip.offsetHeight||140)+14)+'px'; }
+  }
+}
+function tutAdvance(){ S.tut++; tutRender(); }
+function tutUpdate(){
+  if(S.tut<0 || !TUT[S.tut]) return;
+  if(fight) S.tutFightSeen = true;          // 记住"打过一场"，免得步骤跳过
+  if(TUT[S.tut].cond && TUT[S.tut].cond()) tutAdvance();
+  else tutPlace();
+}
+function tutEnd(){
+  S.tut=-1; saveTut();
+  $('tut').classList.remove('on');
+  banner('教学结束 · 去钓第一条鱼吧');
+}
+$('tutNext').addEventListener('click', ()=>{ if(S.tut>=0 && TUT[S.tut] && TUT[S.tut].btn) tutAdvance(); });
+$('tutSkip').addEventListener('click', tutEnd);
+window.addEventListener('resize', ()=>{ if(S.tut>=0) tutPlace(); });
+
+/* =========================================================
+   15.6 经营链：渔获 → 处理 → 卖 / 做菜 → 升级
+   ========================================================= */
+const QORDER = ['S','A','B','C','raw'];
+function priceOf(it){
+  const d = FISH_BY_ID[it.fishId || it.id];
+  if(!d) return 0;
+  const qm = (QUALITY[it.q] || QUALITY.raw).m;
+  const avg = (d.wt[0]+d.wt[1])/2;
+  const wf = 0.72 + 0.28*(it.wt/avg);
+  let v = d.price * qm * wf * S.market * (1 + 0.10*upgLv('sign'));
+  if(it.kind==='dish') v *= (it.dishMult||1) * (it.cookMult||1);
+  return Math.max(1, Math.round(v));
+}
+function stockValue(){ let s=0; for(const it of S.stock) s+=priceOf(it); return s; }
+function addStock(b, q){
+  S.stock.push({ uid:S.uid++, kind:'fish', id:b.id, q:q||'raw', wt:b.wt });
+}
+function sellItem(i){
+  const it = S.stock[i]; if(!it) return;
+  const v = priceOf(it);
+  S.coins += v; S.earned += v;
+  S.stock.splice(i,1);
+  saveCoins();
+  SFX.power();
+  showToast('+'+v+' 金', (it.kind==='dish'? it.name : FISH_BY_ID[it.id].name) + ' · ' + (QUALITY[it.q]||QUALITY.raw).n);
+  refreshLodge();
+}
+function sellAll(){
+  if(!S.stock.length) return;
+  let v = 0;
+  for(const it of S.stock) v += priceOf(it);
+  S.coins += v; S.earned += v;
+  S.stock.length = 0;
+  saveCoins(); SFX.power();
+  showToast('+'+v+' 金', '全部出手');
+  refreshLodge();
+}
+function buyUpg(id){
+  const u = UPGRADES.find(x=>x.id===id); if(!u) return;
+  const lv = upgLv(id);
+  if(lv >= u.max) return;
+  const cost = u.cost[lv];
+  if(S.coins < cost){ showToast('钱不够', '还差 ' + (cost-Math.round(S.coins)) + ' 金'); SFX.bad(); return; }
+  S.coins -= cost; S.upg[id] = lv+1;
+  saveCoins(); saveUpg(); SFX.fanfare();
+  showToast(u.name + ' Lv.' + (lv+1), '-' + cost + ' 金');
+  refreshLodge();
+}
+
+/* =========================================================
+   15.7 刮鳞台：按住鼠标顺着鱼身刮
+   ========================================================= */
+const SEGN = 16;
+const SC = { list:[], idx:0, cur:null, seg:null, dmg:0, t:0, max:8200,
+             down:false, lx:0, ly:0, lt:0, show:0, result:null, cuts:[], fx:0 };
+function scaleRemain(){ let s=0; if(SC.seg) for(let i=0;i<SEGN;i++) s+=SC.seg[i]; return SC.seg? s/SEGN : 1; }
+function gradeOf(rem, dmg){
+  if(rem<=0.11 && dmg<=0.13) return 'S';
+  if(rem<=0.22 && dmg<=0.32) return 'A';
+  if(rem<=0.48 && dmg<=0.60) return 'B';
+  return 'C';
+}
+const SC_MAX = 8;   // 一次最多手动处理 8 条，免得后半段变成重复劳动
+function startScaling(){
+  if(!S.basket.length){ openLodge(); return; }
+  SC.list = S.basket.slice(0, SC_MAX);
+  const rest = S.basket.slice(SC_MAX);
+  if(rest.length){                       // 多出来的按普通品质直接入库
+    rest.forEach(b=>addStock(b, 'B'));
+    showToast('+' + rest.length + ' 条', '时间有限，剩下的按「普通」入库了');
+  }
+  S.basket.length = 0;
+  SC.idx = 0; SC.fx = 0;
+  $('cookHud').classList.remove('on');
+  $('scaleHud').classList.add('on');
+  hideAllOv();
+  S.phase = 'scale';
+  prepScale();
+  banner('刮 鳞 台');
+}
+function prepScale(){
+  SC.cur = SC.list[SC.idx];
+  SC.seg = new Float32Array(SEGN); SC.seg.fill(1);
+  SC.dmg = 0; SC.t = 0; SC.show = 0; SC.result = null;
+  SC.down = false; SC.cuts = [];
+  const d = FISH_BY_ID[SC.cur.id];
+  $('shTitle').textContent = d.name + '　' + (SC.idx+1) + '/' + SC.list.length;
+  $('shSub').textContent = '按住鼠标 / 手指，顺着鱼身来回刮';
+  updateScaleHUD();
+}
+function updateScaleHUD(){
+  const rem = scaleRemain();
+  $('shScale').style.width = (rem*100).toFixed(0)+'%';
+  $('shScaleV').textContent = Math.round(rem*100)+'%';
+  $('shDmg').style.width = (SC.dmg*100).toFixed(0)+'%';
+  $('shDmgV').textContent = Math.round(SC.dmg*100)+'%';
+}
+function scaleFishGeom(){
+  const bw = Math.min(W*0.66, 540), bh = Math.min(H*0.30, 176);
+  const bx = W/2 - bw/2, by = H*0.52 - bh/2 + 26;
+  const d = FISH_BY_ID[SC.cur.id];
+  const s = Math.min(3.2, (bw*0.66)/(41*d.size));
+  return { bx, by, bw, bh, cx:W/2, cy:by+bh*0.52, s, d };
+}
+function scalePointer(x, y, down){
+  if(S.phase!=='scale' || SC.result || !SC.cur) return;
+  SC.down = down;
+  if(!down){ SC.lx=x; SC.ly=y; return; }
+  const now = performance.now();
+  const dt = Math.max(8, now - (SC.lt||now-16));
+  const dist = Math.hypot(x-SC.lx, y-SC.ly);
+  const v = dist/dt;
+  SC.lx = x; SC.ly = y; SC.lt = now;
+  const p = scaleFishGeom();
+  const dx = (x - p.cx)/p.s, dy = (y - p.cy)/p.s;
+  if(Math.abs(dy) < 10.5 && Math.abs(dx) < 22){
+    const i = clamp(Math.floor((dx+19)/41*SEGN), 0, SEGN-1);
+    SC.seg[i] = Math.max(0, SC.seg[i] - 0.135);
+    if(i>0)        SC.seg[i-1] = Math.max(0, SC.seg[i-1]-0.055);
+    if(i<SEGN-1)   SC.seg[i+1] = Math.max(0, SC.seg[i+1]-0.055);
+    const maxV = 1.20 + 0.40*upgLv('knife');
+    if(v > maxV){
+      SC.dmg = Math.min(1, SC.dmg + (v-maxV)*0.085);
+      SC.cuts.push({x:dx, y:dy});
+      SFX.miss();
+      P({k:'drop', x, y, vx:rand(-1,1), vy:rand(-2,-.5), life:0, max:24, s:rand(1,2), c:'235,120,110'});
+    } else {
+      if(Math.random()<0.5) P({k:'drop', x:x+rand(-6,6), y:y+rand(-6,6), vx:rand(-1.6,1.6), vy:rand(-2.4,-.4),
+        life:0, max:26, s:rand(1.2,2.4), c:'215,238,255'});
+      if(Math.random()<0.16) SFX.hit();
+      SC.fx = 1;
+    }
+    updateScaleHUD();
+  }
+}
+function finishScale(auto){
+  const rem = scaleRemain();
+  const q = rem > 0.78 ? 'raw' : gradeOf(rem, SC.dmg);
+  SC.result = { q, rem, dmg:SC.dmg, auto };
+  addStock(SC.cur, q);
+  SC.show = 1150;
+  const d = FISH_BY_ID[SC.cur.id];
+  const Q = QUALITY[q];
+  if(q==='S'){ SFX.fanfare(); banner('★ 极上 · ' + d.name); }
+  else if(q==='raw'){ SFX.bad(); }
+  else { SFX.catchN(false); }
+  $('shSub').textContent = (q==='raw' ? '几乎没刮干净…按未处理计价' : Q.n + ' · 约 ' + priceOf(S.stock[S.stock.length-1]) + ' 金');
+  updateScaleHUD();
+}
+function updateScale(dt){
+  if(SC.result){
+    SC.show -= dt;
+    if(SC.show <= 0){
+      SC.idx++;
+      if(SC.idx >= SC.list.length){ endScaling(); return; }
+      prepScale();
+    }
+    return;
+  }
+  SC.t += dt;
+  if(SC.fx > 0) SC.fx = Math.max(0, SC.fx - dt*0.004);
+  const rem = scaleRemain();
+  if(rem <= 0.03) finishScale(false);
+  else if(SC.t > SC.max) finishScale(true);
+}
+function endScaling(){
+  $('scaleHud').classList.remove('on');
+  S.phase = 'lodge';
+  openLodge();
+}
+/* 案板 / 鱼 / 刀 */
+function drawScaleScene(dt){
+  const g = ctx.createRadialGradient(W*0.5, H*0.30, 24, W*0.5, H*0.42, Math.max(W,H)*0.8);
+  g.addColorStop(0,'#42301f'); g.addColorStop(0.45,'#291d14'); g.addColorStop(1,'#0c0806');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  ctx.save();
+  ctx.globalAlpha = 0.10; ctx.strokeStyle = '#000'; ctx.lineWidth = 1;
+  for(let i=0;i<16;i++){
+    const y = (i/16)*H + Math.sin(i*2.3)*6;
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W, y+Math.sin(i)*10); ctx.stroke();
+  }
+  ctx.restore();
+
+  if(!SC.cur){ return; }
+  const p = scaleFishGeom();
+  // 案板
+  ctx.save();
+  ctx.fillStyle='rgba(0,0,0,.34)';
+  rr(ctx, p.bx+5, p.by+9, p.bw, p.bh, 14); ctx.fill();
+  const bg = ctx.createLinearGradient(0, p.by, 0, p.by+p.bh);
+  bg.addColorStop(0,'#8a6238'); bg.addColorStop(0.5,'#6d4a28'); bg.addColorStop(1,'#4d3319');
+  ctx.fillStyle = bg; rr(ctx, p.bx, p.by, p.bw, p.bh, 14); ctx.fill();
+  ctx.save(); rr(ctx, p.bx, p.by, p.bw, p.bh, 14); ctx.clip();
+  ctx.globalAlpha=0.14; ctx.strokeStyle='#2a1a0c'; ctx.lineWidth=1.4;
+  for(let i=0;i<9;i++){
+    const y = p.by + (i+0.5)*(p.bh/9);
+    ctx.beginPath(); ctx.moveTo(p.bx, y);
+    ctx.bezierCurveTo(p.bx+p.bw*0.35, y+Math.sin(i*1.7)*5, p.bx+p.bw*0.7, y-Math.sin(i*2.1)*5, p.bx+p.bw, y);
+    ctx.stroke();
+  }
+  ctx.restore();
+  ctx.strokeStyle='rgba(255,220,170,.16)'; ctx.lineWidth=1.4;
+  rr(ctx, p.bx+1, p.by+1, p.bw-2, p.bh-2, 13); ctx.stroke();
+  ctx.restore();
+
+  // 鱼
+  const s = p.s, d = p.d;
+  ctx.save();
+  ctx.translate(p.cx, p.cy);
+  ctx.rotate(-0.05 + Math.sin(S.gt*0.004)*0.012 + (SC.fx>0? rand(-0.01,0.01):0));
+  ctx.fillStyle='rgba(0,0,0,.30)';
+  ctx.beginPath(); ctx.ellipse(2, 5*s, 23*s, 4.6*s, 0, 0, TAU); ctx.fill();
+  drawFins(ctx, d, s, 0, true);
+  const sp = SPR[d.id] || buildSprite(d);
+  const k = s / d.size;                    // 精灵按 d.size 生成，这里缩放到案板尺寸
+  ctx.drawImage(sp.cv, -sp.cx*k, -sp.cy*k, sp.w*k, sp.h*k);
+
+  ctx.save();
+  bodyPath(ctx, s); ctx.clip();
+  const fl = hex2rgb(d.flesh || '#f2f6fb');
+  for(let i=0;i<SEGN;i++){
+    const t = 1 - SC.seg[i];
+    if(t <= 0.02) continue;
+    const x0 = lerp(-19*s, 22*s, i/SEGN), x1 = lerp(-19*s, 22*s, (i+1)/SEGN);
+    ctx.fillStyle = rgbStr(fl, 0.88*t);
+    ctx.fillRect(x0, -14*s, x1-x0+1.5, 28*s);
+    const hg = ctx.createLinearGradient(0, -11*s, 0, -1*s);
+    hg.addColorStop(0, `rgba(255,255,255,${0.30*t})`); hg.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle = hg; ctx.fillRect(x0, -14*s, x1-x0+1.5, 28*s);
+  }
+  ctx.strokeStyle='rgba(178,52,52,.55)'; ctx.lineWidth=1.3*s;
+  for(const c of SC.cuts){
+    ctx.beginPath(); ctx.moveTo(c.x*s-3.4*s, c.y*s+0.6*s); ctx.lineTo(c.x*s+3.4*s, c.y*s-1.4*s); ctx.stroke();
+  }
+  ctx.restore();
+  drawFins(ctx, d, s, 0, false);
+  ctx.restore();
+
+  // 刀
+  const kx = SC.lx || W/2, ky = SC.ly || H*0.5;
+  ctx.save();
+  ctx.translate(kx, ky);
+  ctx.rotate(SC.down ? -0.52 : -0.82);
+  const kg = ctx.createLinearGradient(0,-6,0,6);
+  kg.addColorStop(0,'#fbfdff'); kg.addColorStop(0.42,'#c6cfdb');
+  kg.addColorStop(0.56,'#8a93a3'); kg.addColorStop(1,'#eaeff7');
+  ctx.fillStyle = kg;
+  ctx.beginPath();
+  ctx.moveTo(-30,-3.6); ctx.lineTo(26,-5.4); ctx.lineTo(34,0.4); ctx.lineTo(24,4.4); ctx.lineTo(-30,3.2);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,.75)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-28,-1.6); ctx.lineTo(26,-3.2); ctx.stroke();
+  const hg2 = ctx.createLinearGradient(0,-5,0,5);
+  hg2.addColorStop(0,'#7a4f2c'); hg2.addColorStop(0.5,'#54341b'); hg2.addColorStop(1,'#39220f');
+  ctx.fillStyle = hg2;
+  ctx.beginPath(); ctx.moveTo(-30,-4.4); ctx.lineTo(-34,-4.2); ctx.lineTo(-34,3.8); ctx.lineTo(-30,4); ctx.closePath(); ctx.fill();
+  ctx.fillStyle='#2c1a0b';
+  ctx.beginPath(); ctx.moveTo(-46,-3.4); ctx.lineTo(-33,-4.2); ctx.lineTo(-33,4); ctx.lineTo(-46,3.2); ctx.closePath(); ctx.fill();
+  ctx.restore();
+
+  // 结果浮字
+  if(SC.result){
+    const Q = QUALITY[SC.result.q];
+    const a = clamp(SC.show/350, 0, 1);
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.textAlign='center';
+    ctx.font = '700 34px "PingFang SC",system-ui,sans-serif';
+    ctx.fillStyle = SC.result.q==='S' ? '#ffe9a8' : SC.result.q==='raw' ? '#ffb0b0' : '#dbe8ff';
+    ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=14;
+    ctx.fillText(SC.result.q==='raw' ? '没刮干净' : Q.n, W/2, p.by - 18);
+    ctx.font = '500 13px "PingFang SC",system-ui,sans-serif';
+    ctx.fillStyle='rgba(220,232,255,.8)';
+    ctx.fillText(`残留 ${Math.round(SC.result.rem*100)}% · 刀伤 ${Math.round(SC.result.dmg*100)}%`, W/2, p.by + 4);
+    ctx.restore();
+  }
+  drawParts();
+  updateParts(dt);
+}
+
+/* =========================================================
+   15.8 灶台：火候 QTE
+   ========================================================= */
+const CK = { item:null, recipe:null, m:0, dir:1, speed:0.55, zone:0.3, zw:0.2,
+             need:5, heat:0, burn:0, t:0, res:null, show:0, flame:0, done:false };
+function startCook(ri){
+  const r = RECIPES[ri]; if(!r) return;
+  let best = -1, bq = 'raw';
+  S.stock.forEach((it,i)=>{
+    if(it.kind!=='fish' || it.id!==r.need) return;
+    if(QORDER.indexOf(it.q) > QORDER.indexOf(r.minQ)) return;
+    if(best<0 || QORDER.indexOf(it.q) < QORDER.indexOf(bq)){ best=i; bq=it.q; }
+  });
+  if(best<0){
+    const nd = FISH_BY_ID[r.need];
+    showToast('缺食材', `${r.name} 需要 ${nd.name}（${QUALITY[r.minQ].n}以上）`);
+    SFX.bad(); return;
+  }
+  CK.item = S.stock.splice(best,1)[0];
+  CK.recipe = r;
+  CK.m = 0; CK.dir = 1; CK.speed = 0.52; CK.heat = 0; CK.burn = 0;
+  CK.need = 5; CK.t = 0; CK.res = null; CK.show = 0; CK.done = false; CK.flame = 0;
+  CK.zone = rand(0.10, 0.62);
+  CK.zw = (0.20 + 0.055*upgLv('pan')) * (1 + 0.03*upgLv('pan'));
+  $('scaleHud').classList.remove('on');
+  $('cookHud').classList.add('on');
+  $('ckTitle').textContent = r.icon + ' ' + r.name;
+  $('ckSub').textContent = '指针进入金色区域时按 空格 / 点锅 颠勺';
+  hideAllOv();
+  S.phase = 'cook';
+  banner('开 火');
+  updateCookHUD();
+}
+function updateCookHUD(){
+  $('ckHeat').style.width = clamp(CK.heat,0,100).toFixed(0)+'%';
+  $('ckHeatV').textContent = Math.round(clamp(CK.heat,0,100))+'%';
+  $('ckBurn').style.width = clamp(CK.burn,0,100).toFixed(0)+'%';
+  $('ckBurnV').textContent = Math.round(clamp(CK.burn,0,100))+'%';
+}
+function cookPress(){
+  if(S.phase!=='cook' || CK.done) return;
+  if(CK.m >= CK.zone && CK.m <= CK.zone + CK.zw){
+    CK.heat += 100/CK.need; CK.speed *= 1.07; CK.flame = 1;
+    CK.zone = rand(0.08, 0.72 - CK.zw);
+    SFX.hit();
+    for(let i=0;i<8;i++) P({k:'star', x:W/2+rand(-40,40), y:H*0.52+rand(-14,14),
+      vx:rand(-2.2,2.2), vy:rand(-3.4,-1), life:0, max:rand(22,38), s:2, c:'255,214,120'});
+    if(CK.heat >= 100) endCook(CK.burn<20 ? 'perfect' : CK.burn<58 ? 'normal' : 'burnt');
+  } else {
+    CK.burn += 17; CK.heat = Math.max(0, CK.heat - 7);
+    CK.flame = -1;
+    SFX.miss();
+    if(CK.burn >= 100) endCook('burnt');
+  }
+  updateCookHUD();
+}
+function endCook(res){
+  CK.done = true; CK.res = res; CK.show = 1400;
+  const cm = res==='perfect' ? 1.30 : res==='burnt' ? 0.55 : 1.0;
+  S.stock.push({ uid:S.uid++, kind:'dish', id:CK.recipe.id, fishId:CK.item.id,
+    name:CK.recipe.name, icon:CK.recipe.icon, q:CK.item.q, wt:CK.item.wt,
+    dishMult:CK.recipe.mult, cookMult:cm, cookQ:res });
+  S.dishMade++;
+  const nm = res==='perfect' ? '完美！' : res==='burnt' ? '糊了…' : '出锅';
+  $('ckSub').textContent = nm + ' 约 ' + priceOf(S.stock[S.stock.length-1]) + ' 金';
+  if(res==='perfect'){ SFX.fanfare(); banner('★ ' + CK.recipe.name); }
+  else if(res==='burnt'){ SFX.bad(); }
+  else { SFX.catchN(false); }
+}
+function updateCook(dt){
+  if(CK.done){
+    CK.show -= dt;
+    if(CK.show <= 0) endCooking();
+    return;
+  }
+  const f2 = dt/16.7;
+  CK.m += CK.dir * CK.speed * (dt/1000);
+  if(CK.m > 1){ CK.m = 1; CK.dir = -1; }
+  if(CK.m < 0){ CK.m = 0; CK.dir = 1; }
+  CK.t += dt;
+  CK.heat = Math.max(0, CK.heat - dt*0.0035);   // 火候会自然回落，逼你出手
+  CK.burn = Math.min(100, CK.burn + dt*0.006);
+  if(CK.burn >= 100) endCook('burnt');
+  updateCookHUD();
+}
+function endCooking(){
+  $('cookHud').classList.remove('on');
+  openLodge();
+}
+function drawCookScene(dt){
+  const g = ctx.createRadialGradient(W*0.5, H*0.62, 30, W*0.5, H*0.55, Math.max(W,H)*0.8);
+  g.addColorStop(0,'#4a2a18'); g.addColorStop(0.45,'#26160f'); g.addColorStop(1,'#0b0705');
+  ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
+  // 灶台面
+  const ty = H*0.72;
+  const tg = ctx.createLinearGradient(0,ty,0,H);
+  tg.addColorStop(0,'#241a14'); tg.addColorStop(1,'#120c09');
+  ctx.fillStyle = tg; ctx.fillRect(0,ty,W,H-ty);
+  ctx.strokeStyle='rgba(255,200,150,.12)'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(0,ty); ctx.lineTo(W,ty); ctx.stroke();
+
+  // 火
+  const fx = W/2, fy = ty + 34;
+  const fl = 0.55 + 0.45*Math.abs(Math.sin(S.gt*0.006)) + CK.flame*0.5;
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  for(let i=0;i<7;i++){
+    const a = -Math.PI/2 + (i-3)*0.22;
+    const len = (44 + i%3*16) * (0.7 + 0.3*fl) * (1 + Math.max(0,CK.flame)*0.5);
+    const w = 11 - i*0.6;
+    const x0 = fx + (i-3)*13, y0 = fy;
+    const gg = ctx.createLinearGradient(x0, y0, x0 + Math.cos(a)*len*0.4, y0 - len);
+    gg.addColorStop(0, 'rgba(255,190,80,.5)');
+    gg.addColorStop(0.5,'rgba(255,130,40,.32)');
+    gg.addColorStop(1, 'rgba(255,80,30,0)');
+    ctx.fillStyle = gg;
+    ctx.beginPath();
+    ctx.moveTo(x0-w, y0);
+    ctx.quadraticCurveTo(x0-w*0.5, y0-len*0.6, x0 + Math.sin(S.gt*0.01+i)*6, y0-len);
+    ctx.quadraticCurveTo(x0+w*0.5, y0-len*0.6, x0+w, y0);
+    ctx.closePath(); ctx.fill();
+  }
+  ctx.restore();
+  if(CK.flame) CK.flame *= 0.86;
+
+  // 锅
+  const pw = Math.min(W*0.44, 340), ph = pw*0.30;
+  const px = W/2 - pw/2, py = fy - ph*0.55;
+  ctx.save();
+  ctx.fillStyle='rgba(0,0,0,.4)';
+  ctx.beginPath(); ctx.ellipse(W/2, py+ph*0.85, pw*0.52, ph*0.22, 0,0,TAU); ctx.fill();
+  const pg = ctx.createLinearGradient(0,py,0,py+ph);
+  pg.addColorStop(0,'#4b4f57'); pg.addColorStop(0.35,'#2b2e35'); pg.addColorStop(1,'#14161b');
+  ctx.fillStyle = pg;
+  ctx.beginPath();
+  ctx.moveTo(px, py);
+  ctx.quadraticCurveTo(px+pw*0.5, py+ph*1.5, px+pw, py);
+  ctx.lineTo(px+pw*0.92, py+ph*0.16);
+  ctx.quadraticCurveTo(px+pw*0.5, py+ph*0.5, px+pw*0.08, py+ph*0.16);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(255,230,190,.18)'; ctx.lineWidth=1.6;
+  ctx.beginPath(); ctx.moveTo(px,py); ctx.quadraticCurveTo(px+pw*0.5, py+ph*0.5, px+pw, py); ctx.stroke();
+  // 锅里的东西
+  if(CK.item){
+    const d = FISH_BY_ID[CK.item.fishId || CK.item.id];
+    const sp = SPR[d.id] || buildSprite(d);
+    const sc = (pw*0.34) / Math.max(1, sp.w);
+    ctx.save();
+    ctx.translate(W/2, py + ph*0.20);
+    ctx.rotate(Math.sin(S.gt*0.004)*0.05);
+    ctx.globalAlpha = 0.92;
+    ctx.drawImage(sp.cv, -sp.cx*sc, -sp.cy*sc, sp.w*sc, sp.h*sc);
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // 火候环
+  const cx = W/2, cy = H*0.32, R = Math.min(118, W*0.17);
+  ctx.save();
+  ctx.lineCap='butt';
+  ctx.strokeStyle='rgba(255,255,255,.10)'; ctx.lineWidth=13;
+  ctx.beginPath(); ctx.arc(cx,cy,R,0,TAU); ctx.stroke();
+  ctx.strokeStyle='rgba(255,196,90,.85)';
+  ctx.beginPath(); ctx.arc(cx,cy,R, -Math.PI/2 + CK.zone*TAU, -Math.PI/2 + (CK.zone+CK.zw)*TAU); ctx.stroke();
+  ctx.strokeStyle='rgba(255,120,60,.35)'; ctx.lineWidth=4;
+  ctx.beginPath(); ctx.arc(cx,cy,R, -Math.PI/2 + CK.zone*TAU, -Math.PI/2 + (CK.zone+CK.zw)*TAU); ctx.stroke();
+  const a = -Math.PI/2 + CK.m*TAU;
+  ctx.fillStyle='#fff6dc';
+  ctx.beginPath(); ctx.arc(cx+Math.cos(a)*R, cy+Math.sin(a)*R, 8, 0, TAU); ctx.fill();
+  ctx.fillStyle='rgba(255,230,160,.25)';
+  ctx.beginPath(); ctx.arc(cx+Math.cos(a)*R, cy+Math.sin(a)*R, 16, 0, TAU); ctx.fill();
+  ctx.textAlign='center';
+  ctx.font='700 15px "PingFang SC",system-ui,sans-serif';
+  ctx.fillStyle='rgba(255,240,200,.85)';
+  ctx.fillText('火候', cx, cy+5);
+  ctx.restore();
+
+  if(CK.done && CK.res){
+    const a2 = clamp(CK.show/400,0,1);
+    ctx.save(); ctx.globalAlpha=a2; ctx.textAlign='center';
+    ctx.font='800 32px "PingFang SC",system-ui,sans-serif';
+    ctx.fillStyle = CK.res==='perfect'?'#ffe9a8' : CK.res==='burnt'?'#ff9a9a' : '#dbe8ff';
+    ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=14;
+    ctx.fillText(CK.res==='perfect'?'完 美 出 锅' : CK.res==='burnt'?'糊 了' : '出 锅', W/2, H*0.14);
+    ctx.restore();
+  }
+  drawParts();
+  updateParts(dt);
+}
+
+/* =========================================================
+   15.9 渔村：仓库 / 市场 / 厨房 / 商店
+   ========================================================= */
+let lgTab = 'stock';
+function itemName(it){
+  return it.kind==='dish' ? (it.icon||'🍽') + ' ' + it.name : FISH_BY_ID[it.id].name;
+}
+function itemLine(it){
+  const q = QUALITY[it.q] || QUALITY.raw;
+  if(it.kind==='dish'){
+    const cn = it.cookQ==='perfect'?'完美' : it.cookQ==='burnt'?'焦糊' : '家常';
+    return `<span>${cn} · ${q.n}</span><span>${it.wt.toFixed(1)}kg</span>`;
+  }
+  return `<span class="${q.cls}">${q.n}</span><span>${it.wt.toFixed(1)}kg</span>`;
+}
+function renderStock(){
+  if(!S.stock.length) return '<div class="empty2">仓库空空的。<br>去钓点什么回来吧。</div>';
+  return '<div class="inv">' + S.stock.map((it,i)=>
+    `<div class="item"><div class="n"><span>${itemName(it)}</span></div>
+     <div class="m">${itemLine(it)}</div>
+     <div class="m"><span>估价</span><span class="price">${priceOf(it)} 金</span></div></div>`).join('') + '</div>';
+}
+function renderMarket(){
+  if(!S.stock.length) return '<div class="empty2">没有可卖的东西。</div>';
+  return '<div class="inv">' + S.stock.map((it,i)=>
+    `<div class="item" data-act="sell" data-i="${i}"><div class="n"><span>${itemName(it)}</span><span class="price">${priceOf(it)}</span></div>
+     <div class="m">${itemLine(it)}</div>
+     <div class="m"><span style="color:#ffd980">点击卖出</span><span>${it.kind==='dish'?'菜品':'鱼获'}</span></div></div>`).join('') +
+    '</div><div class="btnrow" style="margin-top:12px"><button class="btn" data-act="sellall">全 部 卖 出 · ' + stockValue() + ' 金</button></div>';
+}
+function renderKitchen(){
+  return RECIPES.map((r,i)=>{
+    const nd = FISH_BY_ID[r.need];
+    let ok = false, best = null;
+    S.stock.forEach(it=>{
+      if(it.kind!=='fish' || it.id!==r.need) return;
+      if(QORDER.indexOf(it.q) > QORDER.indexOf(r.minQ)) return;
+      ok = true;
+      if(!best || QORDER.indexOf(it.q) < QORDER.indexOf(best.q)) best = it;
+    });
+    return `<div class="recipe${ok?'':' lock'}" ${ok?`data-act="cook" data-i="${i}"`:''}>
+      <div class="rn"><span>${r.icon} ${r.name}</span><span class="price">×${r.mult}</span></div>
+      <div class="rd">${r.desc}</div>
+      <div class="rd">需要：<b style="color:${ok?'#9df5c4':'#ff9a9a'}">${nd.name}</b>（${QUALITY[r.minQ].n}以上）${ok?' · 点 击 开 火':' · 食材不足'}</div>
+    </div>`;
+  }).join('');
+}
+function renderShop(){
+  return UPGRADES.map(u=>{
+    const lv = upgLv(u.id), maxed = lv>=u.max;
+    const cost = maxed ? 0 : u.cost[lv];
+    const dots = Array.from({length:u.max},(_,k)=>`<span class="lvdot${k<lv?' on':''}"></span>`).join('');
+    return `<div class="upg${maxed?' max':''}" ${maxed?'':`data-act="buy" data-id="${u.id}"`}>
+      <div class="ul"><div class="un">${u.name}</div><div class="ud">${u.desc}</div><div class="lvdots">${dots}</div></div>
+      <div class="price">${maxed?'已满级':cost+' 金'}</div></div>`;
+  }).join('');
+}
+function refreshLodge(){
+  $('lgCoin').textContent = Math.round(S.coins);
+  $('lgMk').textContent = '×' + S.market.toFixed(2);
+  $('lgNet').textContent = Math.round(S.coins + stockValue());
+  const b = $('lgBody');
+  b.innerHTML = lgTab==='stock' ? renderStock()
+              : lgTab==='market' ? renderMarket()
+              : lgTab==='kitchen'? renderKitchen() : renderShop();
+}
+function lodgeTab(t){
+  lgTab = t;
+  document.querySelectorAll('#ovLodge .tab').forEach(x=>x.classList.toggle('on', x.dataset.tab===t));
+  refreshLodge();
+}
+function openLodge(){
+  S.phase = 'lodge';
+  S.market = rand(0.86, 1.26);
+  if(S.basket.length){ S.basket.forEach(b=>addStock(b,'raw')); S.basket.length=0; }
+  $('lodgeSub').textContent = S.levelIdx >= LEVELS.length-1 ? '最后一夜结束了' : '天还没亮，趁新鲜换点钱';
+  $('btnLodgeGo').textContent = S.levelIdx >= LEVELS.length-1 ? '查 看 结 局' : '继 续 夜 钓';
+  lodgeTab('stock');
+  saveCoins(); saveUpg(); saveDex();
+  showOv(OV.lodge);
+  if(!loadFlag('lodge')){
+    setTimeout(()=>{
+      showToast('欢迎来到渔村',
+        '去【市场】卖鱼，去【厨房】做菜赚更多。赚到的钱能在【商店】升级装备。');
+      saveFlag('lodge');
+    }, 350);
+  }
+}
+function lodgeNext(){
+  if(S.levelIdx >= LEVELS.length-1){ showEnding(); return; }
+  S.levelIdx++;
+  gotoBrief();
+}
+document.querySelectorAll('#ovLodge .tab').forEach(b=>{
+  b.addEventListener('click', ()=>lodgeTab(b.dataset.tab));
+});
+$('lgBody').addEventListener('click', e=>{
+  const el = e.target.closest('[data-act]'); if(!el) return;
+  const act = el.dataset.act;
+  if(act==='sell') sellItem(+el.dataset.i);
+  else if(act==='sellall') sellAll();
+  else if(act==='cook') startCook(+el.dataset.i);
+  else if(act==='buy') buyUpg(el.dataset.id);
+});
+$('btnPrep').addEventListener('click', ()=>{ SFX.init(); startScaling(); });
+$('btnPrepSkip').addEventListener('click', ()=>{
+  S.basket.forEach(b=>addStock(b,'raw')); S.basket.length=0;
+  showToast('整条贱卖', '未处理的鱼只能卖半价');
+  openLodge();
+});
+$('btnLodgeGo').addEventListener('click', ()=>{ SFX.init(); lodgeNext(); });
+$('btnLodgeDex').addEventListener('click', ()=>{ buildDex(); S.dexBack='lodge'; showOv(OV.dex); });
 
 /* =========================================================
    16. 启动
@@ -2330,6 +3594,7 @@ function resize(){
   cv.style.height = H+'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
   buildSkyCache();
+  buildPost();
   initDecor();
   initBubbles();
   for(const f of fishes){ f.y = depthToY(clamp(f.dr,0,1)); }
@@ -2342,6 +3607,8 @@ window.addEventListener('orientationchange', ()=>setTimeout(resize,220));
 
 resize();
 S.dex = loadDex();
+S.upg = loadUpg();
+S.coins = loadCoins();
 $('bestIntro').textContent = loadBest();
 resetHook();
 requestAnimationFrame(loop);
